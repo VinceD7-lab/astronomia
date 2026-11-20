@@ -1,0 +1,44 @@
+---
+import { animations, lien } from '../data/cours';
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const choix = ['Toutes', 'I', 'II', 'III', 'IV', 'V', 'VI'];
+const nb = (p: string) => (p === 'Toutes' ? animations.length : animations.filter((a) => a.partie === p).length);
+---
+<section class="bloc" id="animations" aria-labelledby="anim-titre">
+  <div class="wrap">
+    <div class="bloc-tete">
+      <h2 id="anim-titre">Les animations</h2>
+      <p>Le cours explique en montrant. Chaque animation s’ouvre directement, sans passer par le chapitre qui la contient.</p>
+    </div>
+    <div class="filtres" role="group" aria-label="Filtrer par partie" id="filtres">
+      {choix.map((p) => <button type="button" data-p={p} aria-pressed={p === 'Toutes'}>{p === 'Toutes' ? 'Toutes' : 'Partie ' + p} · {nb(p)}</button>)}
+    </div>
+    <ul class="anims" id="anims">
+      {animations.map((a, i) => (
+        <li data-p={a.partie}>
+          <a href={lien(a.chemin).href}>
+            <canvas width="84" height="84" data-motif={a.motif} data-graine={i} aria-hidden="true"></canvas>
+            <span>{cap(a.titre)}<small>PARTIE {a.partie}</small></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="compte" id="compte" aria-live="polite">{animations.length} animations au total.</p>
+  </div>
+</section>
+<script>
+  import { dessinerVignettes } from '../scripts/vignettes.ts';
+  let filtre = 'Toutes';
+  const compte = document.getElementById('compte')!;
+  function appliquer() {
+    let n = 0;
+    document.querySelectorAll<HTMLElement>('#anims li').forEach((li) => { const ok = filtre === 'Toutes' || li.dataset.p === filtre; li.hidden = !ok; if (ok) n++; });
+    document.querySelectorAll<HTMLElement>('#filtres button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === filtre)));
+    compte.textContent = `${n} animation${n > 1 ? 's' : ''}${filtre === 'Toutes' ? ' au total' : ' dans la partie ' + filtre}.`;
+  }
+  document.getElementById('filtres')!.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('button'); if (!b) return; filtre = b.dataset.p!; appliquer();
+  });
+  dessinerVignettes();
+  document.addEventListener('themechange', dessinerVignettes);
+</script>

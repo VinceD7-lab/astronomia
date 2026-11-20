@@ -1,0 +1,78 @@
+---
+import { reperes, bandes, parties } from '../data/cours';
+import { tempsLumiere } from '../lib/lumiere';
+
+// L’échelle est calculée à la compilation : le navigateur ne reçoit que le SVG et un petit script de lecture.
+const X0 = 7, X1 = 27, L = 40, R = 930;
+const x = (lg: number) => L + ((lg - X0) / (X1 - X0)) * (R - L);
+const SUP = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+const exposant = (n: number) => String(n).split('').map((d) => SUP[+d]).join('');
+const graduations = Array.from({ length: X1 - X0 + 1 }, (_, i) => X0 + i);
+const marques = reperes.map((r, i) => {
+  const px = x(Math.log10(r.metres));
+  // le dernier repère est calé à droite pour que son nom ne sorte pas du cadre
+  return { ...r, x: px, haut: i % 2 === 0, val: tempsLumiere(r.metres), ancre: px > R - 60 ? 'end' : 'middle', tx: px > R - 60 ? px + 14 : px };
+});
+const minuscule = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+const rubans = bandes.map((b) => {
+  const p = parties.find((q) => q.id === b.cible)!;
+  const texte = (b.cible === 'p3' ? 'Les étoiles et leur évolution : ' : p.titre + ' : ') + minuscule(p.portee) + '.';
+  return { ...b, y: 138 + b.rang * 15, x1: x(b.debut), x2: x(b.fin), nom: 'Partie ' + b.libelle, texte };
+});
+---
+<figure class="echelle" aria-labelledby="echelle-titre" id="echelle">
+  <div class="echelle-tete">
+    <h2 id="echelle-titre">Le cours, à l’échelle de l’Univers</h2>
+    <p class="label">distance à la Terre · échelle logarithmique</p>
+  </div>
+  <div class="echelle-defil">
+    <svg viewBox="0 0 960 220" role="group" aria-label="Échelle des distances, avec la portée de chaque partie du cours">
+      <g class="mono">
+        {graduations.map((e) => (
+          <>
+            <line x1={x(e)} x2={x(e)} y1="96" y2={e % 5 === 0 ? 106 : 101} stroke="var(--trait)" />
+            {e % 2 === 1 && <text x={x(e)} y="122" text-anchor="middle">10{exposant(e)} m</text>}
+          </>
+        ))}
+      </g>
+      <line x1={L} x2={R} y1="96" y2="96" stroke="var(--doux)" stroke-width="1" />
+      {marques.map((m, i) => (
+        <g class="repere" tabindex="0" data-nom={m.nom} data-txt={m.texte} data-val={m.val} data-i={i}>
+          <line x1={m.x} x2={m.x} y1={m.haut ? 30 : 56} y2="96" stroke="var(--trait)" stroke-dasharray="2 3" />
+          <circle cx={m.x} cy="96" r="4.5" fill="var(--sodium)" />
+          <text class="nom" x={m.tx} y={m.haut ? 24 : 50} text-anchor={m.ancre}>{m.nom}</text>
+          <circle cx={m.x} cy="70" r="18" fill="transparent" />
+        </g>
+      ))}
+      {rubans.map((b) => (
+        <a class="bande" href={`#${b.cible}`} data-nom={b.nom} data-txt={b.texte} data-val="aller à la partie ↓" data-cible={b.cible} aria-label={`${b.nom} : ${b.texte}`}>
+          <rect x={b.x1} y={b.y} width={b.x2 - b.x1} height="10" rx="5" fill="var(--halpha)" opacity=".55" />
+          <text class="mono" x={b.x1 - 6} y={b.y + 9} text-anchor="end">{b.libelle}</text>
+        </a>
+      ))}
+    </svg>
+  </div>
+  <div class="lecture-echelle" aria-live="polite">
+    <b id="ech-nom">{marques[0].nom}</b>
+    <span class="txt" id="ech-txt">{marques[0].texte}</span>
+    <span class="val" id="ech-val">{marques[0].val}</span>
+  </div>
+</figure>
+
+<style>
+  svg .mono, svg text.mono { font-family: var(--mono); font-size: 11px; fill: var(--doux); }
+  svg .nom { font-family: var(--titre); font-size: 12.5px; fill: var(--texte); }
+</style>
+<script>
+  const nom = document.getElementById('ech-nom')!, txt = document.getElementById('ech-txt')!, val = document.getElementById('ech-val')!;
+  const lire = (g: Element) => { const d = (g as HTMLElement).dataset; nom.textContent = d.nom!; txt.textContent = d.txt!; val.textContent = d.val!; };
+  document.querySelectorAll('#echelle .repere').forEach((g) => ['mouseenter', 'focus'].forEach((ev) => g.addEventListener(ev, () => lire(g))));
+  document.querySelectorAll<SVGAElement>('#echelle .bande').forEach((g) => {
+    const marquer = () => {
+      lire(g);
+      const c = g.dataset.cible;
+      document.querySelectorAll('.partie').forEach((p) => p.classList.toggle('actif', p.id === c || (c === 'p3' && p.id === 'p4')));
+    };
+    ['mouseenter', 'focus'].forEach((ev) => g.addEventListener(ev, marquer));
+  });
+</script>

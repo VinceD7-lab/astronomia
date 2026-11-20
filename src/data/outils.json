@@ -1,0 +1,42 @@
+[
+ {
+  "titre": "Lexique",
+  "chemin": "7eme_partie/lexique.php"
+ },
+ {
+  "titre": "Fiches de données",
+  "chemin": "7eme_partie/fiches.php"
+ },
+ {
+  "titre": "Formulaire",
+  "chemin": "7eme_partie/formulaire.php"
+ },
+ {
+  "titre": "Rappels de maths",
+  "chemin": "7eme_partie/maths.php"
+ },
+ {
+  "titre": "Multiplicateurs",
+  "chemin": "7eme_partie/multiplicateurs.php"
+ },
+ {
+  "titre": "Alphabet grec",
+  "chemin": "7eme_partie/alphabetGrec.php"
+ },
+ {
+  "titre": "Tableau périodique",
+  "chemin": "7eme_partie/fiches/mendeleev/mendeleev.php"
+ },
+ {
+  "titre": "Bibliographie",
+  "chemin": "7eme_partie/consultation.php"
+ },
+ {
+  "titre": "Les séminaires",
+  "chemin": "seminaires/seminaires.php"
+ },
+ {
+  "titre": "Almanach du calendrier",
+  "chemin": "1ere_partie/calendrier/calculCalendrier.php"
+ }
+]

@@ -1,0 +1,44 @@
+---
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/source-serif-4/wght-italic.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Barre from '../components/Barre.astro';
+import Pied from '../components/Pied.astro';
+import Sommaire from '../components/Sommaire.astro';
+import Recherche from '../components/Recherche.astro';
+import { url } from '../lib/url';
+
+interface Props { titre?: string; description?: string }
+const SITE = 'Astronomia';
+const { titre, description = 'Cours d’astronomie de Jacques Gispert : un livre en ligne, gratuit et sans publicité, pour toute personne curieuse de l’Univers.' } = Astro.props;
+const complet = titre ? `${titre} – ${SITE}` : SITE;
+const canonique = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{complet}</title>
+  <meta name="description" content={description} />
+  {canonique && <link rel="canonical" href={canonique} />}
+  <meta property="og:title" content={complet} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+  <script is:inline>
+    try { var t = localStorage.getItem('astronomia-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="evitement" href="#haut">Aller au contenu</a>
+  <Barre />
+  <main id="haut"><slot /></main>
+  <Pied />
+  <Sommaire />
+  <Recherche />
+  <script>import '../scripts/interface.ts';</script>
+</body>
+</html>

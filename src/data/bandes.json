@@ -1,0 +1,37 @@
+[
+ {
+  "libelle": "I",
+  "cible": "p1",
+  "debut": 7.5,
+  "fin": 9.1,
+  "rang": 0
+ },
+ {
+  "libelle": "II",
+  "cible": "p2",
+  "debut": 8.6,
+  "fin": 16.3,
+  "rang": 1
+ },
+ {
+  "libelle": "III · IV",
+  "cible": "p3",
+  "debut": 16.4,
+  "fin": 20.7,
+  "rang": 2
+ },
+ {
+  "libelle": "V",
+  "cible": "p5",
+  "debut": 19.2,
+  "fin": 24.4,
+  "rang": 3
+ },
+ {
+  "libelle": "VI",
+  "cible": "p6",
+  "debut": 21.5,
+  "fin": 26.8,
+  "rang": 4
+ }
+]

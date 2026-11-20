@@ -1,0 +1,46 @@
+[
+ {
+  "nom": "Soleil",
+  "g": 274
+ },
+ {
+  "nom": "Mercure",
+  "g": 3.7
+ },
+ {
+  "nom": "Vénus",
+  "g": 8.87
+ },
+ {
+  "nom": "Terre",
+  "g": 9.81
+ },
+ {
+  "nom": "Lune",
+  "g": 1.62
+ },
+ {
+  "nom": "Mars",
+  "g": 3.71
+ },
+ {
+  "nom": "Jupiter",
+  "g": 24.79
+ },
+ {
+  "nom": "Saturne",
+  "g": 10.44
+ },
+ {
+  "nom": "Uranus",
+  "g": 8.87
+ },
+ {
+  "nom": "Neptune",
+  "g": 11.15
+ },
+ {
+  "nom": "Pluton",
+  "g": 0.62
+ }
+]

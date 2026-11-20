@@ -1,0 +1,27 @@
+---
+import EchelleDistances from './EchelleDistances.astro';
+import { lien } from '../data/cours';
+const debut = lien('1ere_partie/generalites.php');
+---
+<section class="ouverture" aria-labelledby="titre">
+  <canvas id="ciel" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="epigraphe"><em>Astronomia est astrorum lex</em> · Isidore de Séville, VII<sup>e</sup> siècle</p>
+    <h1 id="titre">Cours d’astronomie <span>de la Terre aux confins</span></h1>
+    <div class="chapeau">
+      <div>
+        <p class="lede">Un livre en ligne pour toute personne curieuse de l’Univers. Aucune connaissance préalable n’est requise : les explications évitent le formalisme mathématique et s’appuient sur des images et des animations.</p>
+        <p class="auteur">Jacques Gispert · Association Andromède, Observatoire de Marseille</p>
+      </div>
+      <ul class="engagements" aria-label="Engagements du site">
+        <li>Gratuit</li><li>Sans publicité</li><li>Sans inscription</li><li>Aucune donnée collectée</li>
+      </ul>
+    </div>
+    <div class="actions">
+      <a class="bouton plein" href={debut.href}>Commencer au premier chapitre</a>
+      <a class="bouton" href="#livre-parties">Parcourir les sept parties</a>
+    </div>
+    <EchelleDistances />
+  </div>
+</section>
+<script>import '../scripts/ciel.ts';</script>

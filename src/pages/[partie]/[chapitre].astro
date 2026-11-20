@@ -1,0 +1,15 @@
+---
+import { getCollection, render } from 'astro:content';
+import ChapitreLayout from '../../layouts/ChapitreLayout.astro';
+
+export async function getStaticPaths() {
+  const entrees = await getCollection('chapitres');
+  return entrees.map((entry) => {
+    const [partie, chapitre] = entry.id.split('/');
+    return { params: { partie, chapitre }, props: { entry } };
+  });
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+<ChapitreLayout entry={entry} headings={headings}><Content /></ChapitreLayout>

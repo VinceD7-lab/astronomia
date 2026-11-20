@@ -1,0 +1,13 @@
+---
+/**
+ * Marque une section pas encore migrée : renvoie à la même section sur le site actuel.
+ * Se remplace par le texte du chapitre (voir scripts/importer-chapitre.py).
+ */
+import { ORIGINE } from '../../data/cours';
+interface Props { ancre: string; chemin?: string }
+const { ancre, chemin = '1ere_partie/calendrier/calendrier.php' } = Astro.props;
+---
+<p class="a-suivre">
+  <span class="label">Section à migrer</span>
+  <a href={`${ORIGINE}${chemin}#${ancre}`}>Lire cette section sur le site actuel ↗</a>
+</p>

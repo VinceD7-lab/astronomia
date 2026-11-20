@@ -1,0 +1,35 @@
+---
+import { annexes, lien } from '../data/cours';
+const calendrier = lien('1ere_partie/calendrier/calendrier.php');
+const almanach = lien('1ere_partie/calendrier/calculCalendrier.php');
+---
+<section class="bloc" id="outils" aria-labelledby="outils-titre">
+  <div class="wrap">
+    <div class="bloc-tete">
+      <h2 id="outils-titre">À garder sous la main</h2>
+      <p>Les annexes du livre, utiles pendant la lecture de n’importe quel chapitre.</p>
+    </div>
+    <ul class="outils">
+      {annexes.map((a) => <li><a href={lien(a.chemin).href}><b>{a.titre}</b><span>{a.texte}</span></a></li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="bloc" aria-labelledby="livre-titre">
+  <div class="wrap">
+    <div class="livre">
+      <div class="couverture" aria-hidden="true"><b>Le calendrier et ses mystères</b><span>PRESSES UNIVERSITAIRES DE PROVENCE</span></div>
+      <div>
+        <p class="label">Le livre</p>
+        <h2 id="livre-titre">Le calendrier et ses mystères</h2>
+        <p>Le chapitre du cours consacré au calendrier est devenu un livre, publié aux Presses Universitaires de Provence. On y retrouve la construction de notre calendrier et le calcul des fêtes.</p>
+        <p class="doux">Dans le cours, le chapitre <a href={calendrier.href}>Le calendrier</a> et son <a href={almanach.href}>almanach</a> restent en accès libre.</p>
+      </div>
+    </div>
+    <div class="annexes">
+      <a href="https://astronomia.fr/seminaires/seminaires.php"><b>Les séminaires</b><span>Des compléments sur des sujets précis, année après année</span></a>
+      <a href="http://andromede.id.st/cours-d-astronomie-p604507"><b>Le cours en présentiel</b><span>À l’Observatoire historique de Marseille, avec l’association Andromède</span></a>
+      <a href="http://www.lam.fr/"><b>L’actualité du LAM</b><span>Laboratoire d’Astrophysique de Marseille</span></a>
+    </div>
+  </div>
+</section>

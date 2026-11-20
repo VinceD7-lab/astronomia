@@ -1,0 +1,242 @@
+[
+ {
+  "partie": "I",
+  "titre": "mouvement parabolique",
+  "chemin": "1ere_partie/generalites.php#ExpliPara",
+  "motif": "orbite"
+ },
+ {
+  "partie": "I",
+  "titre": "tracé d’une ellipse",
+  "chemin": "1ere_partie/generalites.php#Traceellip",
+  "motif": "orbite"
+ },
+ {
+  "partie": "I",
+  "titre": "loi des aires",
+  "chemin": "1ere_partie/generalites.php#loisKeple",
+  "motif": "orbite"
+ },
+ {
+  "partie": "I",
+  "titre": "les épicycles",
+  "chemin": "1ere_partie/cosmoAntique_java/epicycles_java/ptolemee.html",
+  "motif": "boucle"
+ },
+ {
+  "partie": "I",
+  "titre": "les équants",
+  "chemin": "1ere_partie/cosmoAntique_java/equant_java/equant.html",
+  "motif": "boucle"
+ },
+ {
+  "partie": "I",
+  "titre": "le stéréocomparateur",
+  "chemin": "1ere_partie/instruments_js/blinkM_js/blinkM.php",
+  "motif": "points"
+ },
+ {
+  "partie": "I",
+  "titre": "la turbulence",
+  "chemin": "1ere_partie/instruments_java/turbulence_java/turbulence.html",
+  "motif": "onde"
+ },
+ {
+  "partie": "I",
+  "titre": "les interférences",
+  "chemin": "1ere_partie/lumiere_java/interferences.html",
+  "motif": "onde"
+ },
+ {
+  "partie": "I",
+  "titre": "la diffusion Rayleigh",
+  "chemin": "1ere_partie/lumiere_java/diffRayleigh.html",
+  "motif": "onde"
+ },
+ {
+  "partie": "I",
+  "titre": "le lever héliaque",
+  "chemin": "1ere_partie/calendrier/leverHeliaque.php",
+  "motif": "horizon"
+ },
+ {
+  "partie": "II",
+  "titre": "rétrogradation d’une planète",
+  "chemin": "2eme_partie/systSol_java/retrogradation_java/retrogradation.html",
+  "motif": "boucle"
+ },
+ {
+  "partie": "II",
+  "titre": "calcul du poids",
+  "chemin": "2eme_partie/systSol.php#calcPoids",
+  "motif": "disque"
+ },
+ {
+  "partie": "II",
+  "titre": "simulation du jour solaire",
+  "chemin": "2eme_partie/jourSolaire_java/jourSol.html",
+  "motif": "orbite"
+ },
+ {
+  "partie": "II",
+  "titre": "coucher de soleil",
+  "chemin": "2eme_partie/planetes/3Terre/Terre_java/coucherSol.html",
+  "motif": "horizon"
+ },
+ {
+  "partie": "II",
+  "titre": "coucher et lever de soleil (films)",
+  "chemin": "2eme_partie/planetes/leverSoleil.php",
+  "motif": "horizon"
+ },
+ {
+  "partie": "II",
+  "titre": "carte de la Lune",
+  "chemin": "2eme_partie/planetes/3Terre/lune/lune.php#Cartelune",
+  "motif": "disque"
+ },
+ {
+  "partie": "II",
+  "titre": "libration",
+  "chemin": "2eme_partie/planetes/3Terre/lune/lune_java/libration/libration.html",
+  "motif": "disque"
+ },
+ {
+  "partie": "II",
+  "titre": "marées",
+  "chemin": "2eme_partie/planetes/3Terre/lune/lune_java/marees/marees.html",
+  "motif": "onde"
+ },
+ {
+  "partie": "II",
+  "titre": "bassin de Caloris sur Mercure",
+  "chemin": "2eme_partie/planetes/1Mercure/Mercure.php#carteCaloris",
+  "motif": "disque"
+ },
+ {
+  "partie": "II",
+  "titre": "poids sur Mars",
+  "chemin": "2eme_partie/planetes/4Mars/analyse.php#pesanteur",
+  "motif": "disque"
+ },
+ {
+  "partie": "II",
+  "titre": "carte de Mars",
+  "chemin": "2eme_partie/planetes/4Mars/Mars.php#cartes",
+  "motif": "disque"
+ },
+ {
+  "partie": "III",
+  "titre": "décroissance radioactive",
+  "chemin": "3eme_partie/nucl.php#desRad",
+  "motif": "courbe"
+ },
+ {
+  "partie": "III",
+  "titre": "fusion",
+  "chemin": "3eme_partie/nucl.php#Hél4enf",
+  "motif": "points"
+ },
+ {
+  "partie": "III",
+  "titre": "calcul de la magnitude",
+  "chemin": "3eme_partie/etoiles.php#Magniabsol",
+  "motif": "etoile"
+ },
+ {
+  "partie": "III",
+  "titre": "Ursa Major",
+  "chemin": "3eme_partie/etoiles.php#animUM",
+  "motif": "points"
+ },
+ {
+  "partie": "III",
+  "titre": "durée de vie",
+  "chemin": "3eme_partie/etoiles.php#animMDv",
+  "motif": "courbe"
+ },
+ {
+  "partie": "III",
+  "titre": "rotation d’une étoile",
+  "chemin": "3eme_partie/etoiles.php#Vitesrotat",
+  "motif": "etoile"
+ },
+ {
+  "partie": "III",
+  "titre": "relation masse-luminosité",
+  "chemin": "3eme_partie/etoiles.php#Animatio",
+  "motif": "courbe"
+ },
+ {
+  "partie": "III",
+  "titre": "diagramme HR",
+  "chemin": "3eme_partie/amas_java/diagHR.html",
+  "motif": "points"
+ },
+ {
+  "partie": "III",
+  "titre": "mouvement d’une étoile double",
+  "chemin": "3eme_partie/etoilesDoubles_java/coupleCM.html",
+  "motif": "orbite"
+ },
+ {
+  "partie": "III",
+  "titre": "variables à éclipses",
+  "chemin": "3eme_partie/variables/varEclipses_java/doubleEclipse_java/varEclipsesCL.html",
+  "motif": "courbe"
+ },
+ {
+  "partie": "III",
+  "titre": "spectre double à éclipses",
+  "chemin": "3eme_partie/variables/varEclipses_java/vEclipseSP_java/vEclipsesSp.html",
+  "motif": "onde"
+ },
+ {
+  "partie": "III",
+  "titre": "bêta Lyrae",
+  "chemin": "3eme_partie/variables/varEclipses_java/betaLyrae/betaLyrae.html",
+  "motif": "orbite"
+ },
+ {
+  "partie": "III",
+  "titre": "courbes de céphéides",
+  "chemin": "3eme_partie/variables/varPer_java/courbesCepheide_java/courbesCeph.html",
+  "motif": "courbe"
+ },
+ {
+  "partie": "IV",
+  "titre": "masse-rayon d’une naine blanche",
+  "chemin": "4eme_partie/nainesBlanches_java/masseRayon.html",
+  "motif": "courbe"
+ },
+ {
+  "partie": "V",
+  "titre": "galaxies filamenteuses",
+  "chemin": "5eme_partie/galaxies.php#animFilam",
+  "motif": "spirale"
+ },
+ {
+  "partie": "V",
+  "titre": "galaxies spirales",
+  "chemin": "5eme_partie/galaxies.php#animSpir",
+  "motif": "spirale"
+ },
+ {
+  "partie": "V",
+  "titre": "elliptiques à coquilles",
+  "chemin": "5eme_partie/galaxies.php#animCoq",
+  "motif": "spirale"
+ },
+ {
+  "partie": "V",
+  "titre": "dimensions des quasars",
+  "chemin": "5eme_partie/galaxiesActives_java/quasar.html",
+  "motif": "etoile"
+ },
+ {
+  "partie": "VI",
+  "titre": "le principe d’incertitude",
+  "chemin": "6eme_partie/physiqueParticules_java/heisenberg.html",
+  "motif": "onde"
+ }
+]

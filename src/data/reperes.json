@@ -1,0 +1,47 @@
+[
+ {
+  "nom": "La Lune",
+  "metres": 384400000,
+  "texte": "Notre satellite, à 384 400 km en moyenne."
+ },
+ {
+  "nom": "Le Soleil",
+  "metres": 149600000000,
+  "texte": "Une unité astronomique : 150 millions de km."
+ },
+ {
+  "nom": "Neptune",
+  "metres": 4500000000000,
+  "texte": "La planète la plus lointaine, à 30 ua."
+ },
+ {
+  "nom": "Nuage de Oort",
+  "metres": 15000000000000000,
+  "texte": "Sa limite externe, vers 100 000 ua, soit 1,6 année-lumière."
+ },
+ {
+  "nom": "Proxima du Centaure",
+  "metres": 40170000000000000,
+  "texte": "L’étoile la plus proche du Soleil, à 4,2 années-lumière."
+ },
+ {
+  "nom": "Centre galactique",
+  "metres": 246000000000000000000,
+  "texte": "Le cœur de la Voie lactée, à 26 000 années-lumière."
+ },
+ {
+  "nom": "Galaxie d’Andromède",
+  "metres": 2.4e+22,
+  "texte": "La grande galaxie voisine, à 2,5 millions d’années-lumière."
+ },
+ {
+  "nom": "Amas de la Vierge",
+  "metres": 5.1e+23,
+  "texte": "L’amas de galaxies le plus proche, à 54 millions d’années-lumière."
+ },
+ {
+  "nom": "Univers observable",
+  "metres": 4.4e+26,
+  "texte": "Son rayon actuel, environ 46 milliards d’années-lumière."
+ }
+]

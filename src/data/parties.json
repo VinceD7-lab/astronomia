@@ -1,0 +1,319 @@
+[
+ {
+  "n": "I",
+  "id": "p1",
+  "titre": "Les bases",
+  "portee": "De la Terre à la Lune",
+  "resume": "Le vocabulaire du ciel, les cosmogonies antiques, le calendrier, les distances, la lumière et les instruments d’observation.",
+  "chapitres": [
+   {
+    "titre": "Généralités",
+    "chemin": "1ere_partie/generalites.php"
+   },
+   {
+    "titre": "Cosmogonie antique",
+    "chemin": "1ere_partie/cosmoAntique.php"
+   },
+   {
+    "titre": "Le calendrier",
+    "chemin": "1ere_partie/calendrier/calendrier.php",
+    "sous": "construction et almanach"
+   },
+   {
+    "titre": "Les distances",
+    "chemin": "1ere_partie/distances.php"
+   },
+   {
+    "titre": "Un peu de mécanique",
+    "chemin": "seminaires/annee1314/mecaniqueCeleste.php"
+   },
+   {
+    "titre": "Les instruments",
+    "chemin": "1ere_partie/instruments.php"
+   },
+   {
+    "titre": "La taille d’un miroir",
+    "chemin": "1ere_partie/tailleMiroir.php"
+   },
+   {
+    "titre": "La lumière",
+    "chemin": "1ere_partie/lumiere.php"
+   },
+   {
+    "titre": "Les radiotélescopes",
+    "chemin": "1ere_partie/radioastronomie.php"
+   },
+   {
+    "titre": "Télescopes millimétriques",
+    "chemin": "1ere_partie/astroMillimetrique.php"
+   },
+   {
+    "titre": "La sphère armillaire",
+    "chemin": "1ere_partie/sphereArmillaire/sphereArmillaire.php"
+   }
+  ]
+ },
+ {
+  "n": "II",
+  "id": "p2",
+  "titre": "Le système solaire",
+  "portee": "Jusqu’au nuage de Oort, à près d’une année-lumière",
+  "resume": "Le Soleil, les planètes et leurs atmosphères, les petits corps, les météorites et les comètes, et la formation du système solaire.",
+  "chapitres": [
+   {
+    "titre": "Introduction",
+    "chemin": "2eme_partie/systSol.php"
+   },
+   {
+    "titre": "Les planètes",
+    "chemin": "2eme_partie/systSol.php#planetes"
+   },
+   {
+    "titre": "Les astéroïdes",
+    "chemin": "2eme_partie/petitsCorps/asteroides.php"
+   },
+   {
+    "titre": "Pluton et la Ceinture de Kuiper",
+    "chemin": "2eme_partie/petitsCorps/Kuiper.php"
+   },
+   {
+    "titre": "Le nuage de Oort",
+    "chemin": "2eme_partie/petitsCorps/nuageDeOort.php"
+   },
+   {
+    "titre": "Les atmosphères planétaires",
+    "chemin": "2eme_partie/planetes/atmospheres.php"
+   },
+   {
+    "titre": "Jour solaire",
+    "chemin": "2eme_partie/jourSolaire.php"
+   },
+   {
+    "titre": "Les météorites",
+    "chemin": "2eme_partie/petitsCorps/meteorites.php"
+   },
+   {
+    "titre": "Les comètes",
+    "chemin": "2eme_partie/petitsCorps/cometes.php"
+   },
+   {
+    "titre": "La disparition des dinosaures",
+    "chemin": "2eme_partie/dinosaures.php"
+   },
+   {
+    "titre": "Le Soleil",
+    "chemin": "2eme_partie/soleil.php"
+   },
+   {
+    "titre": "Cosmogonie, formation du système solaire",
+    "chemin": "2eme_partie/cosmogonie.php"
+   },
+   {
+    "titre": "Les aurores boréales",
+    "chemin": "2eme_partie/planetes/auroresBoreales/aurores.php"
+   }
+  ]
+ },
+ {
+  "n": "III",
+  "id": "p3",
+  "titre": "Les étoiles",
+  "portee": "Des étoiles voisines aux amas de la Galaxie",
+  "resume": "Ce qui fait briller une étoile, comment on la mesure, et les familles d’étoiles doubles, variables et en amas.",
+  "chapitres": [
+   {
+    "titre": "La physique nucléaire",
+    "chemin": "3eme_partie/nucl.php"
+   },
+   {
+    "titre": "Les étoiles",
+    "chemin": "3eme_partie/etoiles.php"
+   },
+   {
+    "titre": "La vie des étoiles, en bref",
+    "chemin": "3eme_partie/vieEtoiles.php"
+   },
+   {
+    "titre": "Les étoiles doubles",
+    "chemin": "3eme_partie/etoilesDoubles.php"
+   },
+   {
+    "titre": "Les étoiles variables",
+    "chemin": "3eme_partie/variables.php",
+    "sous": "à éclipses, périodiques, explosives, nébulaires, nouvelles"
+   },
+   {
+    "titre": "Les amas d’étoiles",
+    "chemin": "3eme_partie/amas.php"
+   }
+  ]
+ },
+ {
+  "n": "IV",
+  "id": "p4",
+  "titre": "L’évolution des étoiles",
+  "portee": "Des millions aux milliards d’années",
+  "resume": "De la naissance d’une étoile à ses formes finales : naines blanches, étoiles à neutrons, pulsars et trous noirs.",
+  "chapitres": [
+   {
+    "titre": "L’évolution des étoiles",
+    "chemin": "4eme_partie/evolution.php"
+   },
+   {
+    "titre": "T Tauri",
+    "chemin": "4eme_partie/TTauri.php"
+   },
+   {
+    "titre": "Géantes rouges",
+    "chemin": "4eme_partie/geanteRouge.php"
+   },
+   {
+    "titre": "Naines blanches",
+    "chemin": "4eme_partie/nainesBlanches.php"
+   },
+   {
+    "titre": "Étoiles à neutrons",
+    "chemin": "4eme_partie/EtoilesANeutrons.php"
+   },
+   {
+    "titre": "Pulsars",
+    "chemin": "4eme_partie/pulsars.php"
+   },
+   {
+    "titre": "Trous noirs",
+    "chemin": "4eme_partie/trouNoir.php"
+   },
+   {
+    "titre": "Sursauts gamma et magnétars",
+    "chemin": "4eme_partie/sursautsGamma.php"
+   }
+  ]
+ },
+ {
+  "n": "V",
+  "id": "p5",
+  "titre": "Les galaxies",
+  "portee": "De la Voie lactée aux amas de galaxies",
+  "resume": "Le milieu interstellaire, notre Galaxie, les rayons cosmiques, les galaxies, leurs amas, les galaxies actives et leur évolution.",
+  "chapitres": [
+   {
+    "titre": "Introduction",
+    "chemin": "5eme_partie/intro5.php"
+   },
+   {
+    "titre": "Le milieu interstellaire",
+    "chemin": "5eme_partie/milieuInter.php"
+   },
+   {
+    "titre": "La raie à 21 cm de l’hydrogène neutre",
+    "chemin": "5eme_partie/hNeutre.php"
+   },
+   {
+    "titre": "La Voie lactée",
+    "chemin": "5eme_partie/voieLactee.php"
+   },
+   {
+    "titre": "Les rayons cosmiques",
+    "chemin": "5eme_partie/rayonsCosmiques.php"
+   },
+   {
+    "titre": "Les galaxies",
+    "chemin": "5eme_partie/galaxies.php"
+   },
+   {
+    "titre": "Les amas de galaxies",
+    "chemin": "5eme_partie/amasGalaxies.php"
+   },
+   {
+    "titre": "Les galaxies actives",
+    "chemin": "5eme_partie/galaxiesActives.php"
+   },
+   {
+    "titre": "L’évolution des galaxies",
+    "chemin": "5eme_partie/evolGalaxies.php"
+   }
+  ]
+ },
+ {
+  "n": "VI",
+  "id": "p6",
+  "titre": "Physique et cosmologie",
+  "portee": "L’Univers dans son ensemble",
+  "resume": "Chapitres facultatifs et plus exigeants : physique des particules, relativités galiléenne, restreinte et générale, cosmologie.",
+  "chapitres": [
+   {
+    "titre": "Physique des particules",
+    "chemin": "6eme_partie/physiqueParticules.php"
+   },
+   {
+    "titre": "Relativité galiléenne",
+    "chemin": "6eme_partie/RelativiteGalileenne.php"
+   },
+   {
+    "titre": "Relativité restreinte",
+    "chemin": "6eme_partie/RelativiteRestreinte.php"
+   },
+   {
+    "titre": "Relativité générale",
+    "chemin": "6eme_partie/RelativiteGenerale.php"
+   },
+   {
+    "titre": "Cosmologie",
+    "chemin": "6eme_partie/cosmologie.php"
+   }
+  ]
+ },
+ {
+  "n": "VII",
+  "id": "p7",
+  "titre": "Documents divers",
+  "portee": "Exercices, fiches et annexes",
+  "resume": "De quoi s’exercer, observer et vérifier : exercices, fiches de données, formulaire, lexique, et un chapitre sur les fausses informations.",
+  "chapitres": [
+   {
+    "titre": "Exercices",
+    "chemin": "7eme_partie/exercices.php"
+   },
+   {
+    "titre": "Observations",
+    "chemin": "7eme_partie/observation.php"
+   },
+   {
+    "titre": "Les femmes astronomes",
+    "chemin": "7eme_partie/FemmesAstronomes.php"
+   },
+   {
+    "titre": "Les fausses informations",
+    "chemin": "7eme_partie/infox.php"
+   },
+   {
+    "titre": "Lexique",
+    "chemin": "7eme_partie/lexique.php"
+   },
+   {
+    "titre": "Exoplanètes",
+    "chemin": "7eme_partie/exoplanetes.php"
+   },
+   {
+    "titre": "Fiches de données",
+    "chemin": "7eme_partie/fiches.php"
+   },
+   {
+    "titre": "Formulaire",
+    "chemin": "7eme_partie/formulaire.php"
+   },
+   {
+    "titre": "Rappels de maths",
+    "chemin": "7eme_partie/maths.php"
+   },
+   {
+    "titre": "Bibliographie",
+    "chemin": "7eme_partie/consultation.php"
+   },
+   {
+    "titre": "Plans d’une sphère armillaire",
+    "chemin": "1ere_partie/sphereArmillaire/plansSphere.php"
+   }
+  ]
+ }
+]

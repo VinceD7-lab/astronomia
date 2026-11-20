@@ -1,0 +1,29 @@
+---
+---
+<section class="bloc" aria-labelledby="balance-titre">
+  <div class="wrap balance">
+    <div class="balance-saisie">
+      <p class="label">Essayer tout de suite</p>
+      <h2 id="balance-titre" style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin:.4rem 0 1.2rem">Combien pèseriez-vous ailleurs&#8239;?</h2>
+      <label for="masse">Ce qu’indique votre balance sur Terre</label>
+      <div class="champ"><input id="masse" type="number" inputmode="decimal" min="1" max="500" step="1" value="70" /><span>kg</span></div>
+      <p>Votre masse ne change pas d’un astre à l’autre&#8239;; c’est la pesanteur à sa surface qui change, donc ce qu’afficherait une balance. Pour les planètes géantes, la valeur est celle du niveau des nuages. Le chapitre sur le système solaire propose le même calcul.</p>
+    </div>
+    <ul class="pesees" id="pesees" aria-live="polite"></ul>
+  </div>
+</section>
+<script>
+  import astres from '../data/astres.json';
+  const champ = document.getElementById('masse') as HTMLInputElement, liste = document.getElementById('pesees')!;
+  const G_TERRE = 9.81, G_MAX = Math.max(...astres.map((a) => a.g));
+  function peser() {
+    const m = parseFloat(champ.value.replace(',', '.'));
+    if (!(m > 0)) { liste.innerHTML = '<li><span class="nom">Indiquez une valeur positive.</span></li>'; return; }
+    const max = Math.log10((m * G_MAX) / G_TERRE);
+    liste.innerHTML = astres.map((a) => {
+      const v = (m * a.g) / G_TERRE, larg = Math.max(2, (Math.log10(Math.max(v, 1)) / max) * 100);
+      return `<li class="${a.nom === 'Terre' ? 'terre' : ''}"><span class="nom">${a.nom}</span><span class="jauge" aria-hidden="true"><i style="width:${larg.toFixed(1)}%"></i></span><span class="kg">${v.toLocaleString('fr-FR', { maximumFractionDigits: v < 10 ? 1 : 0 })} kg</span></li>`;
+    }).join('') + '<li><span></span><span class="label" style="font-size:.66rem">jauge logarithmique · équivalent affiché par une balance réglée sur Terre</span><span></span></li>';
+  }
+  champ.addEventListener('input', peser); peser();
+</script>

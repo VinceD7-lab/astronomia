@@ -1,0 +1,75 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import { parties, voisins, lien, ORIGINE } from '../data/cours';
+import { url } from '../lib/url';
+import '../styles/chapitre.css';
+
+interface Props { entry: CollectionEntry<'chapitres'>; headings: MarkdownHeading[] }
+const { entry, headings } = Astro.props;
+const { title, partie, chemin, resume, maj, epigraphe } = entry.data;
+const p = parties[partie - 1];
+const { precedent, suivant } = voisins(chemin);
+const sommaire = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const voisin = (c?: { titre: string; chemin: string }) => (c ? { titre: c.titre, ...lien(c.chemin) } : null);
+const prec = voisin(precedent), suiv = voisin(suivant);
+---
+<BaseLayout titre={title} description={resume}>
+  <article class="chapitre">
+    <header class="chap-tete">
+      <div class="wrap">
+        <p class="label"><a href={url('/') + '#' + p.id}>Partie {p.n} · {p.titre}</a></p>
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <p class="chap-resume">{resume}</p>
+        {epigraphe && <p class="chap-epigraphe">{epigraphe}</p>}
+        <p class="chap-meta">
+          {maj && <span>Mis à jour le {maj} sur le site actuel</span>}
+          <a href={ORIGINE + chemin}>Page d’origine ↗</a>
+        </p>
+      </div>
+    </header>
+
+    <div class="wrap chap-grille">
+      <nav class="sommaire" aria-label="Sommaire du chapitre">
+        <details open>
+          <summary>Dans ce chapitre</summary>
+          <ol>
+            {sommaire.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </details>
+      </nav>
+      <div class="prose" data-pagefind-body>
+        <slot />
+      </div>
+    </div>
+
+    <nav class="chap-voisins wrap" aria-label="Chapitres voisins">
+      {prec ? <a class="prec" href={prec.href}><span class="label">Chapitre précédent</span>{prec.titre}</a> : <span />}
+      {suiv ? <a class="suiv" href={suiv.href}><span class="label">Chapitre suivant</span>{suiv.titre}</a> : <span />}
+    </nav>
+  </article>
+</BaseLayout>
+<script>
+  /* barre de progression + repère de la section lue dans le sommaire */
+  const barre = document.getElementById('progression');
+  const maj = () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    if (barre) barre.style.width = (h > 0 ? Math.min(100, (scrollY / h) * 100) : 0) + '%';
+  };
+  addEventListener('scroll', maj, { passive: true }); maj();
+  const liens = new Map<string, HTMLElement>();
+  document.querySelectorAll<HTMLAnchorElement>('.sommaire a').forEach((a) => liens.set(a.hash.slice(1), a));
+  const titres = [...document.querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id]')];
+  if ('IntersectionObserver' in window && titres.length) {
+    const vus = new Set<string>();
+    const obs = new IntersectionObserver((en) => {
+      en.forEach((e) => (e.isIntersecting ? vus.add(e.target.id) : vus.delete(e.target.id)));
+      const premier = titres.find((t) => vus.has(t.id));
+      liens.forEach((a, id) => a.toggleAttribute('aria-current', !!premier && id === premier.id));
+    }, { rootMargin: '-72px 0px -65% 0px' });
+    titres.forEach((t) => obs.observe(t));
+  }
+  /* sur écran étroit, le sommaire démarre replié */
+  if (matchMedia('(max-width: 1000px)').matches) document.querySelector('.sommaire details')?.removeAttribute('open');
+</script>

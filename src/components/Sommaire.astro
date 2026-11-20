@@ -1,0 +1,16 @@
+---
+import { parties, lien } from '../data/cours';
+---
+<dialog id="sommaire" aria-labelledby="som-titre">
+  <div class="dlg-tete"><h2 id="som-titre">Sommaire du cours</h2><button class="bouton" type="button" data-fermer>Fermer</button></div>
+  <div class="dlg-corps">
+    <div class="som">
+      {parties.map((p) => (
+        <div>
+          <h3><span>{p.n}</span>{p.titre}</h3>
+          <ul>{p.chapitres.map((c) => { const l = lien(c.chemin); return <li><a href={l.href} class:list={{ nouveau: l.local }}>{c.titre}</a></li>; })}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</dialog>

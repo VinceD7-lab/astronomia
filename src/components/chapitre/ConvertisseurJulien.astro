@@ -1,0 +1,64 @@
+---
+const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+---
+<div class="outil conv" id="convertisseur">
+  <form class="conv-bloc" data-form="date">
+    <h4>Date → jour julien</h4>
+    <div class="conv-champs">
+      <label>Jour <input name="jour" type="number" min="1" max="31" value="14" /></label>
+      <label>Mois <select name="mois">{mois.map((m, i) => <option value={i + 1} selected={i === 6}>{m}</option>)}</select></label>
+      <label>Année <input name="an" type="number" min="-4712" max="9999" value="1789" /></label>
+      <label>Calendrier <select name="cal"><option value="auto">selon l’époque</option><option value="gregorien">grégorien</option><option value="julien">julien</option></select></label>
+    </div>
+    <dl class="conv-sortie" data-sortie="date" aria-live="polite"></dl>
+  </form>
+  <form class="conv-bloc" data-form="jj">
+    <h4>Jour julien → date</h4>
+    <div class="conv-champs">
+      <label>Jour julien <input name="jj" type="number" step="0.5" value="2451544.5" /></label>
+    </div>
+    <dl class="conv-sortie" data-sortie="jj" aria-live="polite"></dl>
+  </form>
+  <form class="conv-bloc" data-form="duree">
+    <h4>Durée entre deux dates grégoriennes</h4>
+    <div class="conv-champs">
+      <label>De <input name="a" type="date" value="1789-07-14" /></label>
+      <label>À <input name="b" type="date" value="2026-07-14" /></label>
+    </div>
+    <dl class="conv-sortie" data-sortie="duree" aria-live="polite"></dl>
+  </form>
+</div>
+<script>
+  import { JOURS, jourJulien, jourJulienModifie, dateDepuisJJ, jourSemaine, formaterDate, type Calendrier } from '../../lib/comput';
+  const fr = (n: number, d = 1) => n.toLocaleString('fr-FR', { maximumFractionDigits: d });
+  const ligne = (t: string, v: string) => `<div><dt>${t}</dt><dd>${v}</dd></div>`;
+  const apres = (a: number, m: number, j: number) => a > 1582 || (a === 1582 && (m > 10 || (m === 10 && j >= 15)));
+  const dans = (a: number, m: number, j: number) => a === 1582 && m === 10 && j > 4 && j < 15;
+  const maj = (nom: string, f: HTMLFormElement) => (f.elements.namedItem(nom) as HTMLInputElement | HTMLSelectElement).value;
+
+  function date(f: HTMLFormElement, sortie: HTMLElement) {
+    const j = Number(maj('jour', f)), m = Number(maj('mois', f)), a = Number(maj('an', f)), choix = maj('cal', f);
+    if (![j, m, a].every(Number.isFinite)) { sortie.innerHTML = ''; return; }
+    const cal: Calendrier = choix === 'auto' ? (apres(a, m, j) ? 'gregorien' : 'julien') : (choix as Calendrier);
+    if (choix === 'auto' && dans(a, m, j)) { sortie.innerHTML = ligne('Remarque', 'cette date n’existe pas : le 4 octobre 1582 est suivi du 15 octobre 1582.'); return; }
+    const jj = jourJulien(a, m, j, cal);
+    sortie.innerHTML = ligne('Calendrier utilisé', cal === 'gregorien' ? 'grégorien' : 'julien') + ligne('Jour julien (à 0 h)', fr(jj, 1)) + ligne('Jour julien modifié', fr(jourJulienModifie(jj), 1)) + ligne('Jour de la semaine', JOURS[jourSemaine(jj)]);
+  }
+  function jjVersDate(f: HTMLFormElement, sortie: HTMLElement) {
+    const jj = Number(maj('jj', f));
+    if (!Number.isFinite(jj) || jj < 0) { sortie.innerHTML = ''; return; }
+    const d = dateDepuisJJ(jj), h = ((jj + 0.5) % 1) * 24;
+    sortie.innerHTML = ligne('Date', formaterDate(d) + ` (calendrier ${d.cal === 'gregorien' ? 'grégorien' : 'julien'})`) + ligne('Heure', `${String(Math.floor(h)).padStart(2, '0')} h ${String(Math.round((h % 1) * 60) % 60).padStart(2, '0')}`) + ligne('Jour de la semaine', JOURS[jourSemaine(jj)]) + ligne('Jour julien modifié', fr(jourJulienModifie(jj), 1));
+  }
+  function duree(f: HTMLFormElement, sortie: HTMLElement) {
+    const lire = (n: string) => { const m = maj(n, f).match(/^(-?\d{1,6})-(\d\d)-(\d\d)$/); return m ? jourJulien(+m[1], +m[2], +m[3]) : NaN; };
+    const d = lire('b') - lire('a');
+    if (!Number.isFinite(d)) { sortie.innerHTML = ''; return; }
+    sortie.innerHTML = ligne('Nombre de jours', fr(d, 0)) + ligne('Soit environ', `${fr(d / 365.2425, 2)} années`) + ligne('Semaines entières', `${fr(Math.floor(Math.abs(d) / 7), 0)} et ${Math.abs(d) % 7} jour${Math.abs(d) % 7 > 1 ? 's' : ''}`);
+  }
+  const outils: Record<string, (f: HTMLFormElement, s: HTMLElement) => void> = { date, jj: jjVersDate, duree };
+  document.querySelectorAll<HTMLFormElement>('#convertisseur form').forEach((f) => {
+    const calc = () => outils[f.dataset.form!](f, f.querySelector('[data-sortie]')!);
+    f.addEventListener('input', calc); f.addEventListener('submit', (e) => e.preventDefault()); calc();
+  });
+</script>

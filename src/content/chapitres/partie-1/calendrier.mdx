@@ -1,0 +1,315 @@
+---
+title: Le calendrier
+partie: 1
+chemin: 1ere_partie/calendrier/calendrier.php
+maj: "13/12/2019"
+resume: "Comment compter les jours, les mois et les années : des calendriers de l’Antiquité au calendrier grégorien, puis le calcul de la date de Pâques et la construction d’un almanach."
+---
+import Encadre from '../../../components/chapitre/Encadre.astro';
+import ASuivre from '../../../components/chapitre/ASuivre.astro';
+import Almanach from '../../../components/chapitre/Almanach.astro';
+import ConvertisseurJulien from '../../../components/chapitre/ConvertisseurJulien.astro';
+import { jourJulien, jourJulienModifie, jourSemaine, JOURS, formaterDate, paques, pleineLunePascale, epacte, nombreOr, cycleSolaire, indictionRomaine, lettresDominicales, estBissextile, fetesMobiles } from '../../../lib/comput';
+
+export const fr = (n, d = 1) => n.toLocaleString('fr-FR', { maximumFractionDigits: d });
+export const fr2 = (n) => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+<Encadre type="plus" titre="Chapitre pilote">
+Cette page est le chapitre pilote de la nouvelle version. Les sections de calcul (jour julien, cycles, Pâques, almanach) sont réécrites avec des outils interactifs&#8239;; les autres portent la mention « Section à migrer » et renvoient vers la même section du site actuel, en attendant l’import du texte de l’auteur.
+</Encadre>
+
+## Généralités
+
+### Introduction
+<ASuivre ancre="Introduc" />
+
+### Définition du calendrier
+<ASuivre ancre="Défincalen" />
+
+### Principes généraux
+<ASuivre ancre="Princgénér" />
+
+### Quelques définitions
+<ASuivre ancre="Quelqdéfin" />
+
+### La semaine, les noms des jours
+<ASuivre ancre="semnomjou" />
+
+## La préhistoire et les monuments mégalithiques
+<ASuivre ancre="prémonmég" />
+
+## L’histoire
+
+### Calendrier chaldéen ou babylonien
+<ASuivre ancre="Calchabab" />
+
+### Calendrier égyptien
+<ASuivre ancre="Calenégypt" />
+
+### Calendrier hébreu ancien
+<ASuivre ancre="Calhébanc" />
+
+### Calendrier israélite moderne
+<ASuivre ancre="Calisrmod" />
+
+### Calendrier musulman
+<ASuivre ancre="Calenmusul" />
+
+### Calendrier chinois
+<ASuivre ancre="Calenchino" />
+
+### Calendrier maya
+<ASuivre ancre="Calenmaya" />
+
+### Calendrier aztèque
+<ASuivre ancre="Calenaztèq" />
+
+### Calendrier persan
+<ASuivre ancre="Calenpersa" />
+
+### Calendrier grec
+<ASuivre ancre="Calengrec" />
+
+### Calendrier romain
+<ASuivre ancre="Calenromai" />
+
+### Création du calendrier julien
+<ASuivre ancre="Crécaljul" />
+
+## Le calendrier julien
+
+### Date de Noël
+<ASuivre ancre="DateNoël" />
+
+### Date de Pâques
+<ASuivre ancre="DatePâque" />
+
+### Ère chrétienne
+<ASuivre ancre="Erechrét" />
+
+### Jésus-Christ est né avant J.-C.&#8239;!
+<ASuivre ancre="JésChrest" />
+
+### Autres éléments
+<ASuivre ancre="Autreéléme" />
+
+### Les fêtes mobiles
+<ASuivre ancre="fêtesmobil" />
+
+### Calendrier grégorien
+
+Le calendrier julien compte une année moyenne de 365,25 jours, un peu plus longue que l’année des saisons (l’année tropique, d’environ 365,2422 jours). L’écart, de l’ordre de onze minutes par an, s’accumule&#8239;: au XVI<sup>e</sup> siècle, l’équinoxe de printemps tombait vers le 11 mars au lieu du 21, et la date de Pâques dérivait avec lui.
+
+Le pape Grégoire XIII réforme le calendrier en 1582. Dix jours sont supprimés d’un coup&#8239;: le jeudi 4 octobre 1582 est suivi du vendredi 15 octobre 1582. Surtout, la règle des années bissextiles change&#8239;: les années séculaires ne le sont plus que si leur millésime est divisible par 400.
+
+<Encadre type="retenir">
+Une année est bissextile si elle est divisible par 4, sauf les années séculaires qui ne le sont que si elles sont divisibles par 400. Ainsi 1900 et 2100 ne sont pas bissextiles, mais 2000 l’est.
+</Encadre>
+
+La réforme n’est pas adoptée partout en même temps&#8239;: la France l’applique dès décembre 1582, la Grande-Bretagne seulement en 1752 et la Russie en 1918. Une date de cette période peut donc s’écrire dans deux calendriers, ce qui oblige à préciser lequel on emploie.
+
+### Calendrier républicain
+<ASuivre ancre="Calenrépub" />
+
+### Calendrier universel
+<ASuivre ancre="Calenunive" />
+
+### Période julienne
+<ASuivre ancre="PérioJulie" />
+
+## Le calcul du calendrier
+
+### Calcul de la règle solaire grégorienne
+
+Sur 400 ans, le calendrier grégorien compte 97 années bissextiles. L’année moyenne vaut donc
+
+$$
+\overline{A} = 365 + \frac{97}{400} = 365{,}2425 \ \text{jours}
+$$
+
+soit environ 26 secondes de plus que l’année tropique&#8239;: le décalage atteint un jour en un peu plus de 3 000 ans. Sur 400 ans, le calendrier compte {fr(400 * 365 + 97, 0)} jours, soit exactement {fr((400 * 365 + 97) / 7, 0)} semaines&#8239;: **le calendrier grégorien se reproduit à l’identique, jours de la semaine compris, tous les 400 ans.**
+
+### Cycle de Méton
+
+L’astronome grec Méton d’Athènes remarque en 432 avant J.-C. que 19 années tropiques et 235 lunaisons durent presque le même temps&#8239;:
+
+<div class="tableau">
+<table>
+<thead><tr><th>Durée</th><th class="num">Valeur</th></tr></thead>
+<tbody>
+<tr><td>19 années tropiques (19 × 365,2422 j)</td><td class="num">{fr2(19 * 365.2422)} jours</td></tr>
+<tr><td>235 lunaisons (235 × 29,530589 j)</td><td class="num">{fr2(235 * 29.530589)} jours</td></tr>
+</tbody>
+</table>
+</div>
+
+L’écart n’est que d’environ deux heures. Après 19 ans, les phases de la Lune reviennent donc aux mêmes dates de l’année solaire. Ce cycle est à l’origine du nombre d’or, vu plus bas.
+
+### Quelques solutions vers un calendrier solaire parfait
+<ASuivre ancre="Quesolver" />
+
+### Calcul du jour julien, à partir d’une date julienne
+
+Les astronomes comptent les jours sans se soucier des mois ni des années&#8239;: le **jour julien** (JJ) est le nombre de jours écoulés depuis le 1<sup>er</sup> janvier de l’an 4713 avant J.-C. à midi, dans le calendrier julien. Pour une date J/M/A, on ramène janvier et février aux mois 13 et 14 de l’année précédente (si M vaut 1 ou 2, on remplace A par A − 1 et M par M + 12), puis&#8239;:
+
+$$
+JJ = E\bigl(365{,}25\,(A + 4716)\bigr) + E\bigl(30{,}6001\,(M + 1)\bigr) + J + B - 1524{,}5
+$$
+
+où E désigne la partie entière. Dans le calendrier julien, B = 0.
+
+<Encadre type="def" titre="Convention">
+Les années avant J.-C. se comptent à l’astronomique&#8239;: l’année 1 avant J.-C. est l’année 0, 2 avant J.-C. est l’année −1, etc. Le jour julien commence à midi&#8239;: une date à 0 h se termine donc par « ,5 ».
+</Encadre>
+
+### Calcul du jour julien, à partir d’une date grégorienne
+
+Dans le calendrier grégorien, on ajoute la correction B = 2 − E(A / 100) + E(E(A / 100) / 4), qui compense les jours supprimés en 1582. Pour le 1<sup>er</sup> janvier 2000 à 0 h, on trouve JJ = {fr(jourJulien(2000, 1, 1), 1)}.
+
+Essayez avec vos propres dates&#8239;:
+
+<ConvertisseurJulien />
+
+### Jour julien modifié
+
+Le jour julien est un grand nombre (2,4 millions aujourd’hui) qui commence à midi. Pour le simplifier, on utilise souvent le **jour julien modifié**&#8239;:
+
+$$
+JJM = JJ - 2\,400\,000{,}5
+$$
+
+Il commence à minuit et reste petit&#8239;: le 1<sup>er</sup> janvier 2000 à 0 h, JJM = {fr(jourJulienModifie(jourJulien(2000, 1, 1)), 0)}.
+
+### Durée
+
+La différence de deux jours julien donne directement le nombre de jours entre deux dates, quel que soit le nombre de mois ou d’années bissextiles intermédiaires. Entre le 14 juillet 1789 et le 14 juillet 2026, il s’est écoulé {fr(jourJulien(2026, 7, 14) - jourJulien(1789, 7, 14), 0)} jours. Le dernier outil du convertisseur ci-dessus fait ce calcul pour deux dates grégoriennes.
+
+### Retrouvons le jour de la semaine
+
+Les jours de la semaine tournent sans interruption depuis des siècles. Le jour julien permet de le retrouver&#8239;: on calcule le reste de la division de E(JJ + 1,5) par 7, et on lit le résultat dans ce tableau.
+
+<div class="tableau">
+
+| Reste | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|---|
+| Jour | dimanche | lundi | mardi | mercredi | jeudi | vendredi | samedi |
+
+</div>
+
+Pour le 14 juillet 1789, JJ = {fr(jourJulien(1789, 7, 14), 1)} et le jour obtenu est un **{JOURS[jourSemaine(jourJulien(1789, 7, 14))]}**.
+
+### Comput ecclésiastique
+
+Le comput est l’ensemble des règles qui fixent la date de Pâques. Depuis le concile de Nicée (325), Pâques est le **dimanche qui suit la première pleine lune de printemps**, l’équinoxe de printemps étant conventionnellement fixé au 21 mars. Cette pleine lune n’est pas celle du ciel&#8239;: c’est une pleine lune « ecclésiastique », calculée avec des cycles réguliers (le cycle de Méton) pour que la date puisse être établie des années à l’avance. Les sections suivantes détaillent les éléments de ce calcul.
+
+### Caractère bissextil
+
+Une année julienne est bissextile quand son millésime est divisible par 4. Une année grégorienne l’est dans les conditions de l’encadré donné plus haut. Quelques exemples grégoriens&#8239;:
+
+<div class="tableau">
+<table>
+<thead><tr><th>Année</th>{[1900, 2000, 2024, 2026, 2100].map((an) => <th>{an}</th>)}</tr></thead>
+<tbody><tr><td>Bissextile&#8239;?</td>{[1900, 2000, 2024, 2026, 2100].map((an) => <td>{estBissextile(an) ? 'oui' : 'non'}</td>)}</tr></tbody>
+</table>
+</div>
+
+### Cycle solaire
+
+Dans le calendrier julien, les jours de la semaine reviennent aux mêmes dates tous les 28 ans (la bissextile revient tous les 4 ans et la semaine compte 7 jours, d’où 4 × 7 = 28). Le **cycle solaire** est le rang de l’année dans ce cycle&#8239;:
+
+$$
+CS = (A + 8) \bmod 28 \quad (\text{si le reste est nul, } CS = 28)
+$$
+
+Pour 2026, CS = {cycleSolaire(2026)}.
+
+### Indiction romaine
+
+L’indiction est un cycle de 15 ans, hérité des périodes de recensement fiscal de l’Empire romain&#8239;:
+
+$$
+IR = (A + 3) \bmod 15 \quad (\text{si le reste est nul, } IR = 15)
+$$
+
+Pour 2026, IR = {indictionRomaine(2026)}.
+
+### Nombre d’or
+
+C’est le rang de l’année dans le cycle de Méton, de 19 ans&#8239;:
+
+$$
+NO = (A \bmod 19) + 1
+$$
+
+Pour 2026, NO = {nombreOr(2026)}. Deux années de même nombre d’or ont, à peu près, les mêmes phases de la Lune aux mêmes dates.
+
+### Lettre dominicale
+
+On numérote les jours de l’année de 1 à 7 en recommençant, et on leur donne les lettres A à G&#8239;: A pour le 1<sup>er</sup> janvier, B pour le 2, et ainsi de suite. La **lettre dominicale** est la lettre des dimanches de l’année, et elle suffit à retrouver tous les jours de la semaine. Une année bissextile a deux lettres&#8239;: la première jusqu’en février, la seconde ensuite, car le 29 février décale les lettres d’un cran.
+
+Exemples&#8239;: {lettresDominicales(2025).join(' ')} en 2025, {lettresDominicales(2026).join(' ')} en 2026, {lettresDominicales(2024).join(' ')} en 2024 (année bissextile).
+
+### Détermination du jour de la semaine
+<ASuivre ancre="Détjousem" />
+
+### Calendrier lunaire
+<ASuivre ancre="CalenLunai" />
+
+### Calcul de l’épacte grégorienne
+
+L’**épacte** est l’âge de la Lune ecclésiastique au 1<sup>er</sup> janvier. Pour une année A, on calcule d’abord un paramètre h à l’aide de la division euclidienne&#8239;:
+
+$$
+\begin{aligned}
+a &= A \bmod 19, \quad b = E\!\left(\frac{A}{100}\right), \quad d = E\!\left(\frac{b}{4}\right) \\
+f &= E\!\left(\frac{b+8}{25}\right), \quad g = E\!\left(\frac{b-f+1}{3}\right) \\
+h &= (19a + b - d - g + 15) \bmod 30
+\end{aligned}
+$$
+
+puis l’épacte vaut (23 − h) mod 30. Pour 2026, l’épacte est {epacte(2026)}. Une épacte nulle se note aussi « * », comme en 2025.
+
+### Calcul de la pleine lune pascale
+
+La pleine lune pascale tombe h jours après le 21 mars, avec deux exceptions qui évitent de dépasser le 18 avril&#8239;: si h = 29, on prend h = 28&#8239;; si h = 28 et a est supérieur à 10, on prend h = 27. En 2026, h = 12&#8239;: la pleine lune pascale est le {formaterDate(pleineLunePascale(2026))}.
+
+### Calcul de la date de Pâques
+
+Pâques est le dimanche qui suit la pleine lune pascale&#8239;: si elle tombe un dimanche, on attend le dimanche suivant.
+
+<div class="tableau">
+<table>
+<thead><tr><th>Année</th><th>Pleine lune pascale</th><th>Pâques</th></tr></thead>
+<tbody>
+{[2024, 2025, 2026, 2027].map((an) => <tr><td>{an}</td><td>{formaterDate(pleineLunePascale(an))}</td><td>{formaterDate(paques(an))}</td></tr>)}
+</tbody>
+</table>
+</div>
+
+Pâques tombe toujours entre le 22 mars (en 1818, puis en 2285) et le 25 avril (en 1943, puis en 2038). Les autres fêtes mobiles s’en déduisent&#8239;: le mercredi des Cendres 46 jours avant, l’Ascension 39 jours après et la Pentecôte 49 jours après. En 2026, ce sont le {formaterDate(fetesMobiles(2026).cendres)}, le {formaterDate(fetesMobiles(2026).ascension)} et le {formaterDate(fetesMobiles(2026).pentecote)}.
+
+## Application
+
+### Construction d’un almanach
+
+L’almanach ci-dessous applique tout ce qui précède à l’année de votre choix, de 1583 à 2500&#8239;: calendrier des douze mois, éléments du comput (lettre dominicale, nombre d’or, cycle solaire, indiction, épacte) et fêtes mobiles.
+
+<Almanach />
+
+### Conclusion
+<ASuivre ancre="Conclusi" />
+
+### Synthèse
+<ASuivre ancre="Synthèse" />
+
+### Exercices
+<ASuivre ancre="Exercice" />
+
+### Quelques réponses
+<ASuivre ancre="Quelqrépon" />
+
+### Bibliographie
+<ASuivre ancre="Bibliogr" />
+
+### Index
+<ASuivre ancre="Index" />

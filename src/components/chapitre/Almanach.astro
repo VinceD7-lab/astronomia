@@ -1,0 +1,70 @@
+---
+---
+<div class="outil almanach" id="almanach">
+  <form class="alm-form" id="almForm">
+    <label for="almAn">Millésime</label>
+    <button type="button" class="bouton" data-pas="-1" aria-label="Année précédente">‹</button>
+    <input id="almAn" type="number" min="1583" max="2500" step="1" inputmode="numeric" />
+    <button type="button" class="bouton" data-pas="1" aria-label="Année suivante">›</button>
+    <button type="button" class="bouton" data-maintenant>Année en cours</button>
+    <span class="aide" id="almAide">Années grégoriennes, de 1583 à 2500.</span>
+  </form>
+  <dl class="alm-donnees" id="almDonnees" aria-live="polite"></dl>
+  <div class="alm-mois" id="almMois"></div>
+  <p class="alm-legende" id="almLegende"></p>
+  <noscript><p>Cet almanach demande JavaScript pour calculer l’année choisie.</p></noscript>
+</div>
+<script>
+  import { MOIS, JOURS, jourJulien, jourSemaine, joursDansLeMois, donneesAnnee, formaterDate } from '../../lib/comput';
+  const AN_MIN = 1583, AN_MAX = 2500;
+  const champ = document.getElementById('almAn') as HTMLInputElement;
+  const donnees = document.getElementById('almDonnees')!, mois = document.getElementById('almMois')!, legende = document.getElementById('almLegende')!;
+  const initiales = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+  const cle = (m: number, j: number) => m * 100 + j;
+
+  function afficher(an: number) {
+    const d = donneesAnnee(an);
+    const lignes: [string, string][] = [
+      ['Année bissextile', d.bissextile ? 'oui' : 'non'],
+      ['Lettre dominicale', d.lettres.join(' et ')],
+      ['Nombre d’or', String(d.nombreOr)],
+      ['Cycle solaire', String(d.cycleSolaire)],
+      ['Indiction romaine', String(d.indiction)],
+      ['Épacte', d.epacte === 0 ? '0 (*)' : String(d.epacte)],
+      ['Pleine lune pascale', formaterDate(d.pleineLune)],
+      ['Mercredi des Cendres', formaterDate(d.cendres)],
+      ['Pâques', formaterDate(d.paques)],
+      ['Ascension', formaterDate(d.ascension)],
+      ['Pentecôte', formaterDate(d.pentecote)],
+    ];
+    donnees.innerHTML = lignes.map(([t, v]) => `<div class="${t === 'Pâques' ? 'fort' : ''}"><dt>${t}</dt><dd>${v}</dd></div>`).join('');
+    const fetes = new Map<number, string>([[cle(d.cendres.mois, d.cendres.jour), 'cendres'], [cle(d.paques.mois, d.paques.jour), 'paques'], [cle(d.ascension.mois, d.ascension.jour), 'ascension'], [cle(d.pentecote.mois, d.pentecote.jour), 'pentecote']]);
+    mois.innerHTML = MOIS.map((nom, i) => {
+      const m = i + 1, n = joursDansLeMois(an, m), decalage = (jourSemaine(jourJulien(an, m, 1)) + 6) % 7;
+      const cases = [...Array(decalage).fill('<td></td>'), ...Array.from({ length: n }, (_, k) => {
+        const j = k + 1, f = fetes.get(cle(m, j)), dim = (decalage + k) % 7 === 6;
+        return `<td class="${[dim ? 'dim' : '', f ?? ''].join(' ').trim()}">${j}</td>`;
+      })];
+      while (cases.length % 7) cases.push('<td></td>');
+      const rangees = Array.from({ length: cases.length / 7 }, (_, r) => `<tr>${cases.slice(r * 7, r * 7 + 7).join('')}</tr>`).join('');
+      return `<table><caption>${nom}</caption><thead><tr>${initiales.map((l, k) => `<th scope="col" abbr="${JOURS[(k + 1) % 7]}">${l}</th>`).join('')}</tr></thead><tbody>${rangees}</tbody></table>`;
+    }).join('');
+    legende.innerHTML = '<span class="m cendres"></span> Cendres <span class="m paques"></span> Pâques <span class="m ascension"></span> Ascension <span class="m pentecote"></span> Pentecôte';
+  }
+  function lire(): number | null {
+    const v = Math.trunc(Number(champ.value));
+    return Number.isFinite(v) && v >= AN_MIN && v <= AN_MAX ? v : null;
+  }
+  function maj() {
+    const an = lire(), aide = document.getElementById('almAide')!;
+    champ.setAttribute('aria-invalid', String(an === null));
+    aide.textContent = an === null ? `Saisissez une année entre ${AN_MIN} et ${AN_MAX}.` : `Années grégoriennes, de ${AN_MIN} à ${AN_MAX}.`;
+    if (an !== null) afficher(an);
+  }
+  const maintenant = () => Math.min(AN_MAX, Math.max(AN_MIN, new Date().getFullYear()));
+  document.getElementById('almForm')!.addEventListener('submit', (e) => e.preventDefault());
+  champ.addEventListener('input', maj);
+  document.querySelectorAll<HTMLElement>('#almForm [data-pas]').forEach((b) => b.addEventListener('click', () => { champ.value = String(Math.min(AN_MAX, Math.max(AN_MIN, (lire() ?? maintenant()) + Number(b.dataset.pas)))); maj(); }));
+  document.querySelector('#almForm [data-maintenant]')!.addEventListener('click', () => { champ.value = String(maintenant()); maj(); });
+  champ.value = String(maintenant()); maj();
+</script>

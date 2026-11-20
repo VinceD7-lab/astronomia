@@ -1,0 +1,35 @@
+---
+import { parties, lien } from '../data/cours';
+---
+<section class="bloc" id="livre-parties" aria-labelledby="parties-titre">
+  <div class="wrap">
+    <div class="bloc-tete">
+      <h2 id="parties-titre">Sept parties, comme un livre</h2>
+      <p>Les cinq premières parties s’éloignent pas à pas de la Terre. La sixième, plus exigeante, aborde la physique des particules, la relativité et la cosmologie. La septième rassemble exercices, fiches et documents.</p>
+    </div>
+    <ol class="parties">
+      {parties.map((p) => (
+        <li class="partie" id={p.id}>
+          <span class="num" aria-hidden="true">{p.n}</span>
+          <div>
+            <p class="label">Partie {p.n} · {p.chapitres.length} chapitres</p>
+            <h3>{p.titre}</h3>
+            <p class="portee">{p.portee}</p>
+            <p class="resume">{p.resume}</p>
+            <a class="lire" href={lien(p.chapitres[0].chemin).href}>Lire la partie {p.n} →</a>
+          </div>
+          <div class="liste">
+            <ol class="chapitres">
+              {p.chapitres.map((c) => {
+                const l = lien(c.chemin);
+                return (
+                  <li><a href={l.href} class:list={{ nouveau: l.local }}><span><span class="t">{c.titre}</span>{c.sous && <span class="sous">{c.sous}</span>}</span></a></li>
+                );
+              })}
+            </ol>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

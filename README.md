@@ -55,8 +55,8 @@ Ensuite :
 ## État du chapitre pilote « Le calendrier »
 
 - **Structure** : les 6 grandes parties et 53 sous-sections du chapitre d’origine, avec leurs ancres.
-- **Réécrit** : grégorien, règle solaire, cycle de Méton, jour julien (+ modifié, durée, jour de la semaine), comput, bissextile, cycle solaire, indiction, nombre d’or, lettre dominicale, épacte, pleine lune pascale, Pâques et almanach. Les formules viennent de Jean Meeus, *Astronomical Algorithms* ; les textes sont rédigés pour ce projet, pas copiés du site.
-- **À migrer** : les autres sections (histoire des calendriers, calendrier julien, république, etc.) portent la mention « Section à migrer » avec un lien vers la page d’origine. Elles se remplacent par le texte de l’auteur, à importer avec le script.
+- **Réécrit** : règle solaire, cycle de Méton, jour julien (+ modifié, durée, jour de la semaine), comput, bissextile, cycle solaire, indiction, nombre d’or, lettre dominicale, épacte, pleine lune pascale, Pâques et almanach. Les formules viennent de Jean Meeus, *Astronomical Algorithms* ; les textes sont rédigés pour ce projet, pas copiés du site.
+- **Texte de l’auteur** : toutes les autres sections (généralités, préhistoire, histoire des calendriers, calendrier julien et grégorien, républicain, universel, période julienne, solutions vers un calendrier solaire parfait, détermination du jour de la semaine, calendrier lunaire, conclusion, synthèse, exercices, bibliographie, index) sont reprises du site d’origine. Les images sont dans `src/assets/calendrier/`, les formules réécrites en LaTeX, et les anciennes ancres (`#Calenmaya`, `#katun`…) conservées pour les liens internes et l’index.
 - **Convention** : l’épacte est l’âge de la Lune ecclésiastique au 1er janvier, calculé par l’algorithme de Meeus. À comparer avec la définition retenue par l’auteur dans son chapitre.
 
 ## Limites connues

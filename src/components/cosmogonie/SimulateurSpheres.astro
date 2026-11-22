@@ -1,0 +1,110 @@
+---
+/**
+ * Le système géocentrique : la Terre au centre, sept sphères portant les astres errants
+ * (dans l’ordre de Ptolémée) et la sphère des fixes. Chaque astre avance de son mouvement moyen ;
+ * Mercure et Vénus accompagnent le Soleil. Remplace l’image statique du site d’origine.
+ */
+import { SPHERES } from '../../lib/cosmogonie';
+const C = 300;
+const rayon = (i: number) => 62 + i * 29;      // sphères 0 à 6, puis les fixes en 7
+const RF = rayon(7);
+// étoiles de la sphère des fixes : répartition régulière mais irrégulière à l’œil
+const etoiles = Array.from({ length: 48 }, (_, i) => {
+  const a = (i * 137.508 * Math.PI) / 180;
+  const d = RF + ((i * 7) % 5) * 2.2 - 4;
+  return { x: C + d * Math.cos(a), y: C - d * Math.sin(a), r: 0.9 + ((i * 3) % 4) * 0.35 };
+});
+---
+<div class="sim spheres" data-spheres data-pagefind-ignore>
+  <svg viewBox="0 0 600 600" role="img" aria-label="Système géocentrique : la Terre au centre, entourée des sphères de la Lune, de Mercure, de Vénus, du Soleil, de Mars, de Jupiter, de Saturne, puis de la sphère des fixes.">
+    <circle cx={C} cy={C} r={RF} class="fixes" />
+    {etoiles.map((s) => <circle cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={s.r} class="etoile" />)}
+    <text x={C} y={C - RF - 12} text-anchor="middle" class="nom doux">sphère des fixes</text>
+    {SPHERES.map((s, i) => <circle cx={C} cy={C} r={rayon(i)} class="orbe" />)}
+    <circle cx={C} cy={C} r="20" class="terre" />
+    <text x={C} y={C + 36} text-anchor="middle" class="nom">Terre</text>
+    {SPHERES.map((s, i) => (
+      <g data-astre={i} data-rayon={rayon(i)}>
+        <circle r={s.nom === 'Soleil' ? 9 : s.nom === 'Lune' ? 6 : 5} class={`astre ${s.nom === 'Soleil' ? 'soleil' : ''}`} />
+        <text class="nom" text-anchor="middle">{s.nom}</text>
+      </g>
+    ))}
+  </svg>
+
+  <div class="controls">
+    <label>Vitesse <input data-vitesse type="range" min="0" max="3" step="0.01" value="1.6" /><output data-vitesse-out></output></label>
+    <div class="boutons">
+      <button type="button" data-lecture aria-pressed="false">▶ Lecture</button>
+      <button type="button" data-aujourdhui>Revenir à aujourd’hui</button>
+    </div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-date>–</b><span>date</span></div>
+    <div><b data-res-lune>–</b><span>Lune : un tour en</span></div>
+    <div><b data-res-saturne>–</b><span>Saturne : un tour en</span></div>
+  </div>
+  <p class="legende">Positions moyennes des astres, comme dans les tables des Anciens. Mercure et Vénus ne s’écartent jamais beaucoup du Soleil.</p>
+</div>
+
+<style>
+  .spheres .orbe{fill:none;stroke:var(--doux);stroke-width:1;opacity:.7}
+  .spheres .fixes{fill:none;stroke:var(--trait);stroke-width:14}
+  .spheres .etoile{fill:var(--texte);opacity:.8}
+  .spheres .terre{fill:var(--oiii)}
+  .spheres .astre{fill:var(--texte);stroke:var(--nuit);stroke-width:1.5}
+  .spheres .astre.soleil{fill:var(--sodium)}
+  .spheres .nom{font-family:var(--mono);font-size:12px;fill:var(--texte);paint-order:stroke;stroke:var(--voute);stroke-width:3px}
+  .spheres .nom.doux{fill:var(--doux)}
+</style>
+
+<script>
+  import { SPHERES, longitudeSphere, joursDepuisJ2000 } from '../../lib/cosmogonie';
+
+  const fmt = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)');
+  const dateFr = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+  document.querySelectorAll<HTMLElement>('[data-spheres]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const inV = q<HTMLInputElement>('[data-vitesse]'), bt = q<HTMLButtonElement>('[data-lecture]');
+    const astres = [...root.querySelectorAll<SVGGElement>('[data-astre]')];
+    let j = joursDepuisJ2000(new Date());
+    let enLecture = false, visible = false, voulu = !reduit.matches, dernier = 0;
+
+    const joursParSeconde = () => Math.round(10 ** +inV.value);   // de 1 à 1 000 jours par seconde
+
+    function dessine() {
+      astres.forEach((g, i) => {
+        const l = (longitudeSphere(SPHERES[i], j) * Math.PI) / 180;
+        const r = +g.dataset.rayon!;
+        const x = 300 + r * Math.cos(l), y = 300 - r * Math.sin(l);
+        const c = g.querySelector('circle')!, t = g.querySelector('text')!;
+        c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1));
+        t.setAttribute('x', x.toFixed(1)); t.setAttribute('y', (y - 11).toFixed(1));
+      });
+      const d = new Date(Date.UTC(2000, 0, 1, 12) + j * 86_400_000);
+      q('[data-res-date]').textContent = dateFr.format(d);
+      q('[data-vitesse-out]').textContent = `${fmt(joursParSeconde(), 0)} jour${joursParSeconde() > 1 ? 's' : ''} par seconde`;
+    }
+    q('[data-res-lune]').textContent = `${fmt(SPHERES[0].periode, 1)} jours`;
+    q('[data-res-saturne]').textContent = `${fmt(SPHERES[6].periode / 365.25, 1)} ans`;
+
+    function boucle(t: number) {
+      if (!enLecture) return;
+      if (dernier) j += ((t - dernier) / 1000) * joursParSeconde();
+      dernier = t; dessine(); requestAnimationFrame(boucle);
+    }
+    function lancer() {
+      if (enLecture || !visible || !voulu) return;
+      enLecture = true; dernier = 0; requestAnimationFrame(boucle);
+      bt.textContent = '❚❚ Pause'; bt.setAttribute('aria-pressed', 'true');
+    }
+    function arreter() { enLecture = false; bt.textContent = '▶ Lecture'; bt.setAttribute('aria-pressed', 'false'); }
+
+    bt.addEventListener('click', () => { voulu = !enLecture; if (voulu) lancer(); else arreter(); });
+    q('[data-aujourdhui]').addEventListener('click', () => { j = joursDepuisJ2000(new Date()); dessine(); });
+    inV.addEventListener('input', dessine);
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) lancer(); else enLecture = false; }).observe(root);
+    dessine();
+  });
+</script>

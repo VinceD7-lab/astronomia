@@ -21,6 +21,9 @@ export default defineConfig({
   redirects: {
     '/1ere_partie/calendrier/calendrier.php': `${BASE.replace(/\/$/, '')}/partie-1/calendrier/`,
     '/1ere_partie/calendrier/calculCalendrier.php': `${BASE.replace(/\/$/, '')}/partie-1/calendrier/#almanach`,
+    '/1ere_partie/cosmoAntique.php': `${BASE.replace(/\/$/, '')}/partie-1/cosmogonie-antique/`,
+    '/1ere_partie/cosmoAntique_java/epicycles_java/ptolemee.html': `${BASE.replace(/\/$/, '')}/partie-1/cosmogonie-antique/#almageste`,
+    '/1ere_partie/cosmoAntique_java/equant_java/equant.html': `${BASE.replace(/\/$/, '')}/partie-1/cosmogonie-antique/#equants`,
   },
   markdown: {
     processor: unified({

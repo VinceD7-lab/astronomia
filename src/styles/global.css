@@ -207,3 +207,25 @@ dialog::backdrop{background:rgba(3,4,12,.7)}
 .dlg-corps .som a{display:block}
 .barre{background:color-mix(in srgb,var(--nuit) 93%,transparent)}
 .barre{background:color-mix(in srgb,var(--nuit) 97%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+/* ---- simulateurs (mini-applications) : un composant .astro par simulateur, racine .sim ---- */
+.sim{border:1px solid var(--trait);border-radius:10px;background:var(--voute);padding:1rem 1.1rem;margin:1.6rem 0;font-family:var(--titre);content-visibility:auto;contain-intrinsic-size:auto 640px}
+.sim svg{display:block;width:100%;height:auto;max-height:70vh;margin:0 auto}
+.sim .controls{display:flex;flex-wrap:wrap;align-items:end;gap:.7rem 1.2rem;margin:.9rem 0 0}
+.sim .controls label{display:flex;flex-direction:column;gap:.25rem;font-size:.85rem;color:var(--doux);min-width:9rem;flex:1 1 9rem}
+.sim .controls output{font-family:var(--mono);color:var(--sodium);font-size:.85rem}
+.sim input[type=range]{width:100%;accent-color:var(--oiii)}
+.sim .boutons{display:flex;flex-wrap:wrap;gap:.4rem;flex:1 1 100%}
+.sim button{font-family:var(--mono);font-size:.78rem;color:var(--texte);background:var(--nuit);border:1px solid var(--trait);border-radius:999px;padding:.35rem .8rem;cursor:pointer}
+.sim button:hover{border-color:var(--oiii)}
+.sim button[aria-pressed="true"]{color:var(--nuit);background:var(--oiii);border-color:var(--oiii)}
+.sim .readout{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:.2rem 1.2rem;margin:1rem 0 0}
+.sim .readout div{border-top:1px solid var(--trait);padding:.4rem 0;display:flex;flex-direction:column-reverse}
+.sim .readout span{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--doux)}
+.sim .readout b{font-size:1.1rem;font-weight:500;color:var(--sodium);font-variant-numeric:tabular-nums}
+.sim .legende{font-size:.82rem;color:var(--doux);margin:.6rem 0 0!important}
+@media print{
+  .sim{content-visibility:visible;break-inside:avoid}
+  .sim .controls{display:none}
+  .sim::after{content:"Simulation interactive disponible dans la version en ligne du cours.";display:block;font-size:.8rem;font-style:italic;margin-top:.5rem}
+}

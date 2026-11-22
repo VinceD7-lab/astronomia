@@ -26,6 +26,9 @@ export const astres: { nom: string; g: number }[] = astresJson;
 export const locales: Record<string, string> = {
   '1ere_partie/calendrier/calendrier.php': '/partie-1/calendrier/',
   '1ere_partie/calendrier/calculCalendrier.php': '/partie-1/calendrier/#almanach',
+  '1ere_partie/cosmoAntique.php': '/partie-1/cosmogonie-antique/',
+  '1ere_partie/cosmoAntique_java/epicycles_java/ptolemee.html': '/partie-1/cosmogonie-antique/#almageste',
+  '1ere_partie/cosmoAntique_java/equant_java/equant.html': '/partie-1/cosmogonie-antique/#equants',
 };
 
 /** Adresse d’une page du cours : la nouvelle page si elle existe, sinon la page d’origine. */

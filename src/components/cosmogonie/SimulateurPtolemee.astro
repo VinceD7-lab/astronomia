@@ -1,0 +1,236 @@
+---
+/**
+ * Modèle de Ptolémée : une planète tourne sur un épicycle dont le centre parcourt le déférent.
+ * Avec `equant`, la Terre est décalée du centre du déférent, et c’est vu depuis l’équant (le point
+ * symétrique) que le centre de l’épicycle tourne uniformément. Remplace les deux applets Java
+ * « épicycles » et « équants » du site d’origine.
+ */
+interface Props {
+  /** Rapport v2 / v1 (tours de la planète sur l’épicycle pendant un tour du déférent). */
+  k?: number;
+  /** Rayon de l’épicycle, en rayons du déférent. */
+  r?: number;
+  /** Active le mode équant et fixe l’excentricité de départ. */
+  equant?: boolean;
+  e?: number;
+}
+const { k = 5, r = 0.4, equant = false, e = equant ? 0.2 : 0 } = Astro.props;
+const titre = equant ? 'Épicycle, déférent et équant' : 'Épicycle et déférent';
+const graduations = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360];
+---
+<div class="sim ptolemee" data-ptolemee data-pagefind-ignore data-k={k} data-r={r} data-e={e} data-equant={equant ? '1' : '0'}>
+  <svg viewBox="0 0 600 600" role="img" aria-label={`${titre} : la planète tourne sur un petit cercle dont le centre tourne autour de la Terre ; en bas, sa position vue depuis la Terre au fil du temps.`}>
+    <g class="geo">
+      <path data-trace-d class="trace" d="" />
+      <path data-trace-r class="trace retro" d="" />
+      <circle data-deferent class="cercle" r="100" cx="300" cy="215" />
+      <circle data-epicycle class="cercle" r="20" cx="300" cy="215" />
+      <line data-ligne-equant class="l-equant" />
+      <line data-ligne-epi class="l-epi" />
+      <line data-ligne-terre class="l-terre" />
+      <g data-equant-g>
+        <path data-equant class="equant" d="" />
+        <text data-equant-txt class="etiq" text-anchor="end">équant</text>
+      </g>
+      <circle data-centre-def class="centre" r="2.5" />
+      <circle data-terre class="terre" r="7" />
+      <text data-terre-txt class="etiq">Terre</text>
+      <circle data-planete class="planete" r="6" />
+      <text data-planete-txt class="etiq">planète</text>
+      <text data-deferent-txt class="etiq doux">déférent</text>
+      <text data-epicycle-txt class="etiq doux" text-anchor="middle">épicycle</text>
+    </g>
+    <g class="ciel">
+      <text x="30" y="452" class="etiq doux">Vue depuis la Terre : longitude au fil du dernier tour (le temps descend)</text>
+      <rect x="30" y="462" width="540" height="118" rx="4" class="bande" />
+      {graduations.map((g) => (
+        <g>
+          <line x1={30 + (540 * g) / 360} x2={30 + (540 * g) / 360} y1="462" y2="580" class="grad" />
+          {g % 90 === 0 && <text x={30 + (540 * g) / 360} y="596" text-anchor="middle" class="etiq doux">{g}°</text>}
+        </g>
+      ))}
+      <path data-ciel-d class="trace" d="" />
+      <path data-ciel-r class="trace retro" d="" />
+      <circle data-ciel-planete class="planete" r="5" />
+    </g>
+  </svg>
+
+  <div class="controls">
+    <label>Rapport v2 / v1 <input data-k type="range" min="1" max="8" step="1" /><output data-k-out></output></label>
+    <label>Rayon de l’épicycle <input data-r type="range" min="0.05" max="0.7" step="0.01" /><output data-r-out></output></label>
+    {equant && <label>Excentricité (Terre – centre) <input data-e type="range" min="0" max="0.4" step="0.01" /><output data-e-out></output></label>}
+    <label>Durée d’un tour du déférent <input data-duree type="range" min="4" max="40" step="1" value="16" /><output data-duree-out></output></label>
+    <div class="boutons">
+      <button type="button" data-lecture aria-pressed="false">▶ Lecture</button>
+      <button type="button" data-preset="origine">Réglage d’origine (v2 / v1 = 5)</button>
+      <button type="button" data-preset="mars">Ptolémée pour Mars (v2 / v1 = 2)</button>
+    </div>
+  </div>
+
+  <div class="readout" aria-live="polite">
+    <div><b data-res-lon>–</b><span>longitude vue de la Terre</span></div>
+    <div><b data-res-mvt>–</b><span>mouvement apparent</span></div>
+    <div><b data-res-retro>–</b><span>rétrogradations par tour</span></div>
+    <div><b data-res-dist>–</b><span>distance Terre – planète</span></div>
+  </div>
+  <p class="legende">
+    Trait clair : direction Terre – planète.{equant && ' Trait rouge : direction équant – centre de l’épicycle, qui tourne uniformément.'}{' '}
+    Les parties de la trajectoire en rouge sont parcourues en rétrogradation.
+  </p>
+</div>
+
+<style>
+  .ptolemee .cercle{fill:none;stroke:var(--doux);stroke-width:1.2}
+  .ptolemee .trace{fill:none;stroke:var(--sodium);stroke-width:1.6;opacity:.75}
+  .ptolemee .trace.retro{stroke:var(--halpha);opacity:1;stroke-width:2.2}
+  .ptolemee .l-terre{stroke:var(--texte);stroke-width:1.2}
+  .ptolemee .l-equant{stroke:var(--halpha);stroke-width:1.4}
+  .ptolemee .l-epi{stroke:var(--doux);stroke-width:1;stroke-dasharray:3 3}
+  .ptolemee .equant{stroke:var(--halpha);stroke-width:2;fill:none}
+  .ptolemee .centre{fill:var(--doux)}
+  .ptolemee .terre{fill:var(--oiii)}
+  .ptolemee .planete{fill:var(--sodium);stroke:var(--nuit);stroke-width:1.5}
+  .ptolemee .etiq{font-family:var(--mono);font-size:13px;fill:var(--texte)}
+  .ptolemee .etiq.doux{fill:var(--doux);font-size:12px}
+  .ptolemee .bande{fill:var(--nuit);stroke:var(--trait)}
+  .ptolemee .grad{stroke:var(--trait);stroke-width:1}
+</style>
+
+<script>
+  import { centreEpicycle, planete, terre, longitude, ecart, retrogradations, type Ptolemee } from '../../lib/cosmogonie';
+
+  const TOUR = 2 * Math.PI;
+  const fmt = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-ptolemee]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string, a: Record<string, number | string>) => {
+      const el = q<SVGElement>(s);
+      for (const [n, v] of Object.entries(a)) el.setAttribute(n, String(v));
+    };
+    const inK = q<HTMLInputElement>('[data-k]'), inR = q<HTMLInputElement>('[data-r]');
+    const inE = q<HTMLInputElement | null>('[data-e]'), inDuree = q<HTMLInputElement>('[data-duree]');
+    const btLecture = q<HTMLButtonElement>('[data-lecture]');
+    const modeEquant = root.dataset.equant === '1';
+
+    const depart = { k: root.dataset.k!, r: root.dataset.r!, e: root.dataset.e! };
+    inK.value = depart.k; inR.value = depart.r; if (inE) inE.value = depart.e;
+
+    let a = 0.9;               // angle du centre de l’épicycle vu depuis l’équant
+    let enLecture = false, visible = false, voulu = !reduit.matches, dernier = 0;
+
+    const params = (): Ptolemee => ({ k: +inK.value, r: +inR.value, e: inE ? +inE.value : 0 });
+
+    // repère : déférent de rayon 1 centré en (CX, CY), échelle choisie pour que tout tienne
+    const CX = 300, CY = 215;
+    let S = 100;
+    const X = (x: number) => CX + S * x, Y = (y: number) => CY - S * y;   // y vers le haut
+
+    let nbRetro = 0;
+    function regler() {
+      const p = params();
+      S = 190 / (1 + p.e + p.r);
+      nbRetro = retrogradations(p);
+      q('[data-k-out]').textContent = fmt(p.k, 0);
+      q('[data-r-out]').textContent = fmt(p.r, 2);
+      if (inE) q('[data-e-out]').textContent = fmt(p.e, 2);
+      q('[data-duree-out]').textContent = `${inDuree.value} s`;
+      q('[data-res-retro]').textContent = fmt(nbRetro, 0);
+      att('[data-deferent]', { cx: X(0), cy: Y(0), r: S });
+      att('[data-centre-def]', { cx: X(0), cy: Y(0) });
+      const T = terre(p);
+      att('[data-terre]', { cx: X(T.x), cy: Y(T.y) });
+      att('[data-terre-txt]', { x: X(T.x) + 10, y: Y(T.y) + 18 });
+      const ex = X(-p.e), ey = Y(0);
+      att('[data-equant]', { d: `M${ex - 6} ${ey - 6}L${ex + 6} ${ey + 6}M${ex - 6} ${ey + 6}L${ex + 6} ${ey - 6}` });
+      att('[data-equant-txt]', { x: ex - 10, y: ey + 18 });
+      const montrerEquant = modeEquant && p.e > 0.005;
+      q<SVGGElement>('[data-equant-g]').style.display = montrerEquant ? '' : 'none';
+      q<SVGLineElement>('[data-ligne-equant]').style.display = modeEquant ? '' : 'none';
+      att('[data-deferent-txt]', { x: X(-0.98) - 8, y: Y(-0.55) + 40 });
+      dessine();
+    }
+
+    function dessine() {
+      const p = params();
+      const C = centreEpicycle(a, p.e), P = planete(a, p), T = terre(p);
+      att('[data-epicycle]', { cx: X(C.x), cy: Y(C.y), r: S * p.r });
+      // étiquette de l’épicycle du côté opposé à la planète, pour ne pas la chevaucher
+      const ux = (C.x - P.x) / p.r, uy = (C.y - P.y) / p.r, d = S * p.r + 16;
+      att('[data-epicycle-txt]', { x: X(C.x) + ux * d, y: Y(C.y) - uy * d + 4 });
+      att('[data-planete]', { cx: X(P.x), cy: Y(P.y) });
+      att('[data-planete-txt]', { x: X(P.x) + 9, y: Y(P.y) - 9 });
+      att('[data-ligne-terre]', { x1: X(T.x), y1: Y(T.y), x2: X(P.x), y2: Y(P.y) });
+      att('[data-ligne-equant]', { x1: X(-p.e), y1: Y(0), x2: X(C.x), y2: Y(C.y) });
+      att('[data-ligne-epi]', { x1: X(C.x), y1: Y(C.y), x2: X(P.x), y2: Y(P.y) });
+
+      // trajectoire et vue depuis la Terre pendant le dernier tour, rétrogradations en rouge
+      const N = 480;
+      let dD = '', dR = '', cD = '', cR = '';
+      let prevL = longitude(a - TOUR, p), prevRetro: boolean | null = null, prevBx = 0, prevBy = 0, prevPx = 0, prevPy = 0;
+      const bande = (l: number) => 30 + (540 * (((l * 180) / Math.PI + 360) % 360)) / 360;
+      for (let i = 0; i <= N; i++) {
+        const ai = a - TOUR + (TOUR * i) / N;
+        const Pi = planete(ai, p), li = longitude(ai, p);
+        const retro = i > 0 && ecart(li - prevL) < 0;
+        const px = X(Pi.x), py = Y(Pi.y), bx = bande(li), by = 462 + (118 * i) / N;
+        if (i > 0) {
+          const seg = `M${prevPx.toFixed(1)} ${prevPy.toFixed(1)}L${px.toFixed(1)} ${py.toFixed(1)}`;
+          if (retro) dR += seg; else dD += seg;
+          if (Math.abs(bx - prevBx) < 270) {
+            const segB = `M${prevBx.toFixed(1)} ${prevBy.toFixed(1)}L${bx.toFixed(1)} ${by.toFixed(1)}`;
+            if (retro) cR += segB; else cD += segB;
+          }
+        }
+        prevL = li; prevRetro = retro; prevPx = px; prevPy = py; prevBx = bx; prevBy = by;
+      }
+      att('[data-trace-d]', { d: dD }); att('[data-trace-r]', { d: dR });
+      att('[data-ciel-d]', { d: cD }); att('[data-ciel-r]', { d: cR });
+      att('[data-ciel-planete]', { cx: prevBx, cy: 580 });
+
+      const l = longitude(a, p);
+      const retroMaintenant = ecart(longitude(a + 1e-4, p) - l) < 0;
+      q('[data-res-lon]').textContent = `${fmt(((l * 180) / Math.PI + 360) % 360, 0)}°`;
+      q('[data-res-mvt]').textContent = retroMaintenant ? 'rétrograde' : 'direct';
+      q('[data-res-dist]').textContent = fmt(Math.hypot(P.x - T.x, P.y - T.y), 2);
+      void prevRetro;
+    }
+
+    function boucle(t: number) {
+      if (!enLecture) return;
+      if (dernier) a += ((t - dernier) / 1000) * (TOUR / +inDuree.value);
+      dernier = t;
+      dessine();
+      requestAnimationFrame(boucle);
+    }
+    function lancer() {
+      if (enLecture || !visible || !voulu) return;
+      enLecture = true; dernier = 0; requestAnimationFrame(boucle);
+      btLecture.textContent = '❚❚ Pause'; btLecture.setAttribute('aria-pressed', 'true');
+    }
+    function arreter() {
+      enLecture = false;
+      btLecture.textContent = '▶ Lecture'; btLecture.setAttribute('aria-pressed', 'false');
+    }
+
+    btLecture.addEventListener('click', () => {
+      voulu = !enLecture;
+      if (voulu) lancer(); else arreter();
+    });
+    for (const el of [inK, inR, inE, inDuree]) el?.addEventListener('input', regler);
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.preset === 'origine') { inK.value = '5'; inR.value = '0.4'; }
+      else { inK.value = '2'; inR.value = '0.6'; }
+      regler();
+    }));
+
+    // l’animation ne tourne que si le simulateur est à l’écran (et jamais d’elle-même si l’on a demandé moins d’animations)
+    new IntersectionObserver(([en]) => {
+      visible = en.isIntersecting;
+      if (visible) lancer(); else if (enLecture) { enLecture = false; }
+    }).observe(root);
+
+    regler();
+  });
+</script>

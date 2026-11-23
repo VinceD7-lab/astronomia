@@ -1,0 +1,142 @@
+---
+/**
+ * Parallaxe annuelle : vue de dessus (Terre autour du Soleil, étoile proche, étoiles du fond),
+ * et vue au télescope, où l’étoile proche oscille devant le fond au fil de l’année.
+ * Remplace le schéma fixe « parallaxe d’une étoile » du site d’origine.
+ */
+interface Props { distance?: number }
+const { distance = 3.48 } = Astro.props;
+const fond = Array.from({ length: 26 }, (_, i) => ({ y: 30 + ((i * 53) % 250), r: 1 + ((i * 7) % 3) * 0.5 }));
+const champ = Array.from({ length: 22 }, (_, i) => ({ x: 40 + ((i * 97) % 520), y: 352 + ((i * 41) % 86), r: 0.8 + ((i * 5) % 3) * 0.6 }));
+---
+<div class="sim parallaxe" data-parallaxe data-pagefind-ignore data-distance={distance}>
+  <svg viewBox="0 0 600 470" role="img" aria-label="En haut, la Terre tourne autour du Soleil et l’on vise une étoile proche devant les étoiles lointaines ; en bas, l’étoile proche se déplace au cours de l’année devant le fond d’étoiles.">
+    <text x="20" y="18" class="etiq doux">Vue de dessus (schéma, pas à l’échelle)</text>
+    <rect x="570" y="24" width="22" height="262" rx="3" class="bande" />
+    {fond.map((s) => <circle cx="581" cy={s.y} r={s.r} class="etoile" />)}
+    <text x="562" y="300" class="etiq doux" text-anchor="end">étoiles lointaines</text>
+    <circle cx="110" cy="155" r="78" class="orbite" />
+    <line data-visee class="visee" />
+    <line data-visee-a class="visee pale" /><line data-visee-b class="visee pale" />
+    <circle cx="110" cy="155" r="11" class="soleil" />
+    <circle data-terre r="6" class="terre" />
+    <text data-terre-txt class="etiq">Terre</text>
+    <circle data-etoile r="5" class="proche" />
+    <text data-etoile-txt class="etiq" text-anchor="middle">étoile proche</text>
+    <path data-angle class="arc" d="" />
+
+    <text x="20" y="332" class="etiq doux">Vue au télescope (champ de 2,4″)</text>
+    <rect x="20" y="340" width="560" height="110" rx="4" class="champ" />
+    {champ.map((s) => <circle cx={s.x} cy={s.y} r={s.r} class="etoile" />)}
+    <line x1="300" x2="300" y1="345" y2="445" class="repere" />
+    <path data-chemin class="chemin" d="" />
+    <circle data-image r="6" class="proche" />
+    <text data-mois class="etiq doux" x="570" y="440" text-anchor="end" />
+  </svg>
+  <div class="controls">
+    <label>Distance de l’étoile <input data-d type="range" min="0" max="4" step="any" /><output data-d-out></output></label>
+    <div class="boutons">
+      <button type="button" data-lecture aria-pressed="false">▶ Lecture</button>
+      <button type="button" data-preset="1.301">Proxima du Centaure</button>
+      <button type="button" data-preset="3.48">61 Cygni</button>
+      <button type="button" data-preset="7.68">Véga</button>
+      <button type="button" data-preset="136">Pléiades</button>
+      <button type="button" data-preset="8178">Centre galactique</button>
+    </div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-p>–</b><span>parallaxe</span></div>
+    <div><b data-res-al>–</b><span>distance</span></div>
+    <div><b data-res-km>–</b><span>en kilomètres</span></div>
+    <div><b data-res-mesure>–</b><span>mesurable</span></div>
+  </div>
+  <p class="legende">Plus l’étoile est proche, plus elle se déplace devant le fond au cours de l’année. La parallaxe est la moitié de ce va-et-vient : l’angle sous lequel on verrait, depuis l’étoile, le rayon de l’orbite terrestre.</p>
+</div>
+
+<style>
+  .parallaxe .orbite{fill:none;stroke:var(--doux);stroke-width:1;stroke-dasharray:4 4}
+  .parallaxe .soleil{fill:var(--sodium)}
+  .parallaxe .terre{fill:var(--oiii)}
+  .parallaxe .proche{fill:var(--halpha);stroke:var(--nuit);stroke-width:1.5}
+  .parallaxe .etoile{fill:var(--texte);opacity:.75}
+  .parallaxe .bande,.parallaxe .champ{fill:var(--nuit);stroke:var(--trait)}
+  .parallaxe .visee{stroke:var(--texte);stroke-width:1.2}
+  .parallaxe .visee.pale{stroke:var(--doux);stroke-dasharray:3 3}
+  .parallaxe .arc{fill:none;stroke:var(--sodium);stroke-width:1.5}
+  .parallaxe .repere{stroke:var(--trait);stroke-dasharray:2 3}
+  .parallaxe .chemin{stroke:var(--halpha);stroke-width:2;opacity:.45;fill:none}
+  .parallaxe .etiq{font-family:var(--mono);font-size:13px;fill:var(--texte)}
+  .parallaxe .etiq.doux{fill:var(--doux);font-size:12px}
+</style>
+
+<script>
+  import { parallaxe, PC_AL, PC_KM } from '../../lib/distances';
+
+  const fmt = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const sig = (x: number) => fmt(x, x >= 100 ? 0 : x >= 10 ? 1 : 2);
+  const EXP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const scientifique = (x: number) => {
+    const n = Math.floor(Math.log10(x));
+    return `${fmt(x / 10 ** n, 2)} × 10${String(n).split('').map((c) => EXP[+c]).join('')}`;
+  };
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)');
+  const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+  document.querySelectorAll<HTMLElement>('[data-parallaxe]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string, a: Record<string, number | string>) => { const el = q<SVGElement>(s); for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const inD = q<HTMLInputElement>('[data-d]'), bt = q<HTMLButtonElement>('[data-lecture]');
+    inD.value = String(Math.log10(+root.dataset.distance!));
+    let phase = 0.25;                // fraction d’année
+    let enLecture = false, visible = false, voulu = !reduit.matches, dernier = 0;
+    const S = { x: 110, y: 155 }, R = 78;
+
+    function dessine() {
+      const d = 10 ** +inD.value, p = parallaxe(d);
+      // vue de dessus : l’étoile s’éloigne vers le fond selon le logarithme de la distance
+      const ex = 240 + (300 * +inD.value) / 4, E = { x: ex, y: S.y };
+      const a = 2 * Math.PI * phase, Tt = { x: S.x + R * Math.cos(a), y: S.y - R * Math.sin(a) };
+      const fondY = (P: { x: number; y: number }) => P.y + ((E.y - P.y) * (581 - P.x)) / (E.x - P.x);
+      att('[data-terre]', { cx: Tt.x, cy: Tt.y });
+      att('[data-terre-txt]', { x: Tt.x + 9, y: Tt.y - 9 });
+      att('[data-etoile]', { cx: E.x, cy: E.y });
+      att('[data-etoile-txt]', { x: E.x, y: E.y - 14 });
+      att('[data-visee]', { x1: Tt.x, y1: Tt.y, x2: 581, y2: fondY(Tt) });
+      const A = { x: S.x, y: S.y - R }, B = { x: S.x, y: S.y + R };
+      att('[data-visee-a]', { x1: A.x, y1: A.y, x2: 581, y2: fondY(A) });
+      att('[data-visee-b]', { x1: B.x, y1: B.y, x2: 581, y2: fondY(B) });
+      // angle α vu depuis l’étoile entre les deux positions extrêmes de la Terre
+      const r = 26, a1 = Math.atan2(A.y - E.y, A.x - E.x), a2 = Math.atan2(B.y - E.y, B.x - E.x);
+      att('[data-angle]', { d: `M${E.x + r * Math.cos(a1)} ${E.y + r * Math.sin(a1)}A${r} ${r} 0 0 0 ${E.x + r * Math.cos(a2)} ${E.y + r * Math.sin(a2)}` });
+      // vue au télescope : déplacement réel, champ de 2,4″ sur 560 px
+      const ech = 560 / 2.4, dx = -p * Math.sin(a) * ech, dy = p * Math.cos(a) * ech * 0.35;
+      att('[data-image]', { cx: 300 + dx, cy: 395 + dy });
+      const w = p * ech, h = p * ech * 0.35;
+      att('[data-chemin]', { d: w > 0.5 ? `M${300 - w} 395a${w} ${h} 0 1 0 ${2 * w} 0a${w} ${h} 0 1 0 ${-2 * w} 0` : '' });
+      q('[data-mois]').textContent = MOIS[Math.floor((((phase % 1) + 1) % 1) * 12)];
+
+      q('[data-d-out]').textContent = `${sig(d)} pc`;
+      q('[data-res-p]').textContent = p >= 0.01 ? `${fmt(p, 3)}″` : p >= 1e-4 ? `${fmt(p * 1000, 2)} mas` : `${fmt(p * 1e6, 0)} µas`;
+      q('[data-res-al]').textContent = `${sig(d)} pc = ${sig(d * PC_AL)} al`;
+      q('[data-res-km]').textContent = `${scientifique(d * PC_KM)} km`;
+      q('[data-res-mesure]').textContent = p >= 0.033 ? 'depuis le sol' : p >= 0.001 ? 'par Hipparcos' : p >= 2e-5 ? 'par Gaia' : 'non, trop loin';
+    }
+
+    function boucle(t: number) {
+      if (!enLecture) return;
+      if (dernier) phase += (t - dernier) / 8000;   // une année en 8 secondes
+      dernier = t; dessine(); requestAnimationFrame(boucle);
+    }
+    function lancer() {
+      if (enLecture || !visible || !voulu) return;
+      enLecture = true; dernier = 0; requestAnimationFrame(boucle);
+      bt.textContent = '❚❚ Pause'; bt.setAttribute('aria-pressed', 'true');
+    }
+    function arreter() { enLecture = false; bt.textContent = '▶ Lecture'; bt.setAttribute('aria-pressed', 'false'); }
+    bt.addEventListener('click', () => { voulu = !enLecture; if (voulu) lancer(); else arreter(); });
+    inD.addEventListener('input', dessine);
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => { inD.value = String(Math.log10(+b.dataset.preset!)); dessine(); }));
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) lancer(); else enLecture = false; }).observe(root);
+    dessine();
+  });
+</script>

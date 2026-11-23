@@ -1,0 +1,30 @@
+---
+/**
+ * Ordres de grandeur des distances et des durées en fonction du décalage spectral z,
+ * calculés au moment de la compilation pour les paramètres de Planck.
+ */
+import { PLANCK, distancePropre, distanceLuminosite, distanceAngulaire, age, tempsRegard, MPC_GAL } from '../../lib/distances';
+const zs = [0.1, 0.5, 1, 2, 3, 6, 10, 1100];
+const fr = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const g = (mpc: number) => { const x = mpc * MPC_GAL; return fr(x, x < 10 ? 2 : x < 1000 ? 1 : 0); };
+const duree = (ga: number) => (ga >= 0.01 ? fr(ga, 2) : `${fr(Math.round(ga * 1e6) * 1000, 0)} ans`);
+const lignes = zs.map((z) => ({
+  z: fr(z, 0 < z && z < 1 ? 1 : 0),
+  regard: fr(tempsRegard(z, PLANCK), 2),
+  age: duree(age(z, PLANCK)),
+  phi: g(distancePropre(z, PLANCK)),
+  lum: g(distanceLuminosite(z, PLANCK)),
+  diam: g(distanceAngulaire(z, PLANCK)),
+}));
+---
+<div class="tableau">
+  <table>
+    <thead>
+      <tr><th class="num">z</th><th class="num">temps de parcours de la lumière</th><th class="num">âge de l’Univers à l’émission</th><th class="num">distance propre d<sub>φ</sub></th><th class="num">distance de luminosité</th><th class="num">distance angulaire</th></tr>
+      <tr><th></th><th class="num">milliards d’années</th><th class="num">milliards d’années</th><th class="num" colspan="3">milliards d’années-lumière</th></tr>
+    </thead>
+    <tbody>
+      {lignes.map((l) => <tr><td class="num">{l.z}</td><td class="num">{l.regard}</td><td class="num">{l.age}</td><td class="num">{l.phi}</td><td class="num">{l.lum}</td><td class="num">{l.diam}</td></tr>)}
+    </tbody>
+  </table>
+</div>

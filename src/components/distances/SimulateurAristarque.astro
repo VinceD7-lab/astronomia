@@ -1,0 +1,124 @@
+---
+/**
+ * Méthode d’Aristarque : au premier quartier, l’angle Terre-Lune-Soleil est droit. L’avance du
+ * premier quartier sur le milieu entre nouvelle et pleine Lune donne l’angle LTH, donc ST / LT.
+ * Remplace les deux schémas fixes du site d’origine (Soleil à l’infini, Soleil à distance finie).
+ */
+interface Props { theta?: number }
+const { theta = 3 } = Astro.props;
+---
+<div class="sim aristarque" data-aristarque data-pagefind-ignore data-theta={theta}>
+  <svg viewBox="0 0 600 330" role="img" aria-label="Orbite de la Lune autour de la Terre, avec la nouvelle Lune, le premier quartier et la pleine Lune, et le triangle Terre-Lune-Soleil rectangle en L.">
+    <circle cx="170" cy="200" r="120" class="orbite" />
+    <line x1="170" y1="200" x2="590" y2="200" class="axe" />
+    <line x1="170" y1="200" x2="170" y2="60" class="axe pointille" />
+    <path data-arc class="arc" d="" />
+    <line data-tl class="cote" /><line data-ls class="cote soleil" />
+    <path data-droit class="droit" d="" />
+    <circle cx="290" cy="200" r="6" class="lune nl" /><text x="290" y="222" text-anchor="middle" class="etiq doux">NL</text>
+    <circle cx="50" cy="200" r="6" class="lune" /><text x="50" y="222" text-anchor="middle" class="etiq doux">PL</text>
+    <circle cx="170" cy="80" r="5" class="fantome" /><text x="170" y="52" text-anchor="middle" class="etiq doux">H</text>
+    <circle cx="170" cy="200" r="11" class="terre" /><text x="150" y="228" text-anchor="end" class="etiq">T</text>
+    <g data-l><circle r="7" class="lune pq" /><path class="ombre" d="" data-phase /></g>
+    <text data-l-txt class="etiq">L (PQ)</text>
+    <text data-theta-txt class="etiq sodium" />
+    <g data-s><circle r="16" class="soleil-d" /></g>
+    <text data-s-txt class="etiq" text-anchor="end" />
+  </svg>
+  <div class="controls">
+    <label>Angle LTH (décalage du premier quartier) <input data-curseur type="range" min="0" max="1" step="0.001" /><output data-theta-out></output></label>
+    <div class="boutons">
+      <button type="button" data-preset="3">Aristarque : 3°</button>
+      <button type="button" data-preset="0.148">Valeur réelle : 0,15°</button>
+      <button type="button" data-preset="20">Exagéré : 20°</button>
+    </div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-avance>–</b><span>avance du premier quartier</span></div>
+    <div><b data-res-ecart>–</b><span>écart NL→PQ / PQ→PL</span></div>
+    <div><b data-res-rapport>–</b><span>Soleil / Lune (ST / LT)</span></div>
+    <div><b data-res-km>–</b><span>distance du Soleil</span></div>
+  </div>
+  <p class="legende">Les angles LTH et LST sont égaux : ST = LT / sin(LTH). Le Soleil est dessiné à l’échelle tant qu’il tient dans le cadre ; au-delà, seule la direction L → S est tracée.</p>
+</div>
+
+<style>
+  .aristarque .orbite{fill:none;stroke:var(--doux);stroke-width:1;stroke-dasharray:4 4}
+  .aristarque .axe{stroke:var(--trait);stroke-width:1.2}
+  .aristarque .pointille{stroke-dasharray:3 4}
+  .aristarque .cote{stroke:var(--texte);stroke-width:1.4}
+  .aristarque .cote.soleil{stroke:var(--sodium)}
+  .aristarque .arc{fill:none;stroke:var(--sodium);stroke-width:1.5}
+  .aristarque .droit{fill:none;stroke:var(--doux);stroke-width:1}
+  .aristarque .terre{fill:var(--oiii)}
+  .aristarque .lune{fill:var(--doux)}
+  .aristarque .lune.pq{fill:var(--texte)}
+  .aristarque .ombre{fill:var(--nuit)}
+  .aristarque .fantome{fill:none;stroke:var(--doux);stroke-dasharray:2 2}
+  .aristarque .soleil-d{fill:var(--sodium)}
+  .aristarque .etiq{font-family:var(--mono);font-size:13px;fill:var(--texte)}
+  .aristarque .etiq.doux{fill:var(--doux);font-size:12px}
+  .aristarque .etiq.sodium{fill:var(--sodium)}
+</style>
+
+<script>
+  import { rapportSoleilLune, avancePremierQuartier, UA_KM } from '../../lib/distances';
+
+  const fmt = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const DEG = Math.PI / 180;
+  // curseur 0 → 1 vers un angle de 0,05° à 30°, sur une échelle logarithmique
+  const versAngle = (v: number) => 0.05 * 600 ** v;
+  const versCurseur = (t: number) => Math.log(t / 0.05) / Math.log(600);
+  const duree = (h: number) => (h >= 1 ? `${fmt(h, 1)} h` : `${fmt(h * 60, 0)} min`);
+
+  document.querySelectorAll<HTMLElement>('[data-aristarque]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string, a: Record<string, number | string>) => { const el = q<SVGElement>(s); for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const curseur = q<HTMLInputElement>('[data-curseur]');
+    curseur.value = String(versCurseur(+root.dataset.theta!));
+    const T = { x: 170, y: 200 }, R = 120;
+
+    function dessine() {
+      const th = versAngle(+curseur.value);
+      // la Lune au premier quartier, décalée de θ vers la nouvelle Lune (le Soleil est à droite)
+      const L = { x: T.x + R * Math.sin(th * DEG), y: T.y - R * Math.cos(th * DEG) };
+      const vraie = R / Math.sin(th * DEG);
+      const coupe = T.x + vraie > 575;
+      // direction L → S, perpendiculaire à TL : c’est elle qui porte toute la méthode
+      const ux = Math.cos(th * DEG), uy = Math.sin(th * DEG);
+      const fin = coupe ? { x: 590, y: L.y + (uy * (590 - L.x)) / ux } : { x: T.x + vraie, y: T.y };
+      att('[data-l] circle', { cx: L.x, cy: L.y });
+      // moitié éclairée tournée vers le Soleil : la moitié opposée est dans l’ombre
+      const px = -uy * 7, py = ux * 7;
+      att('[data-phase]', { d: `M${L.x + px} ${L.y + py}A7 7 0 0 1 ${L.x - px} ${L.y - py}Z` });
+      att('[data-l-txt]', { x: L.x + 12, y: L.y - 10 });
+      att('[data-tl]', { x1: T.x, y1: T.y, x2: L.x, y2: L.y });
+      att('[data-ls]', { x1: L.x, y1: L.y, x2: fin.x, y2: fin.y });
+      q<SVGGElement>('[data-s]').style.display = coupe ? 'none' : '';
+      att('[data-s] circle', { cx: fin.x, cy: T.y });
+      att('[data-s-txt]', coupe ? { x: 590, y: T.y - 12 } : { x: fin.x + 10, y: T.y - 24 });
+      q('[data-s-txt]').textContent = coupe ? `S hors du cadre, à ${fmt(vraie / R, vraie / R < 100 ? 1 : 0)} × TL →` : 'S (Soleil)';
+      // angle θ entre TH et TL, et angle droit en L
+      const r = 46;
+      att('[data-arc]', { d: `M${T.x} ${T.y - r}A${r} ${r} 0 0 1 ${T.x + r * Math.sin(th * DEG)} ${T.y - r * Math.cos(th * DEG)}` });
+      att('[data-theta-txt]', { x: T.x + 14, y: T.y - r - 8 });
+      q('[data-theta-txt]').textContent = `θ = ${fmt(th, th < 1 ? 3 : 1)}°`;
+      const a = 10, vx = (T.x - L.x) / R, vy = (T.y - L.y) / R;  // vers T
+      att('[data-droit]', { d: `M${L.x + vx * a} ${L.y + vy * a}l${ux * a} ${uy * a}l${-vx * a} ${-vy * a}` });
+
+      const rapport = rapportSoleilLune(th), avance = avancePremierQuartier(th);
+      q('[data-theta-out]').textContent = `${fmt(th, th < 1 ? 3 : 2)}°`;
+      q('[data-res-avance]').textContent = duree(avance);
+      q('[data-res-ecart]').textContent = duree(2 * avance);
+      q('[data-res-rapport]').textContent = `${fmt(rapport, rapport < 100 ? 1 : 0)} fois`;
+      const km = rapport * 384_400;
+      q('[data-res-km]').textContent = `${fmt(km / 1e6, km < 1e7 ? 2 : 0)} millions de km (${fmt(km / UA_KM, 2)} UA)`;
+    }
+
+    curseur.addEventListener('input', dessine);
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => {
+      curseur.value = String(versCurseur(+b.dataset.preset!)); dessine();
+    }));
+    dessine();
+  });
+</script>

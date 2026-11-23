@@ -1,0 +1,131 @@
+---
+/**
+ * Distances cosmologiques en fonction du décalage spectral z : distance propre aujourd’hui d_φ,
+ * distance de luminosité d_lum = d_φ (1 + z) et distance de diamètre angulaire d_diam = d_φ / (1 + z),
+ * pour un modèle d’Univers réglable (H0, Ωm, ΩΛ).
+ */
+// repère : z de 0,01 à 1 100 (log), distances de 0,01 à 100 000 milliards d’al (log)
+const ZMIN = -2, ZMAX = Math.log10(1100), DMIN = -2, DMAX = 5;
+const X = (lz: number) => 70 + (500 * (lz - ZMIN)) / (ZMAX - ZMIN);
+const Y = (ld: number) => 20 + (250 * (DMAX - ld)) / (DMAX - DMIN);
+const zs = [0.01, 0.1, 1, 10, 100, 1000];
+const ds = [0.01, 0.1, 1, 10, 100, 1000, 10000, 100000];
+const txt = (x: number) => x.toLocaleString('fr-FR');
+---
+<div class="sim cosmo" data-cosmo data-pagefind-ignore>
+  <svg viewBox="0 0 600 320" role="img" aria-label="Trois courbes : distance propre, distance de luminosité et distance de diamètre angulaire en fonction du décalage spectral z. La distance angulaire passe par un maximum puis diminue.">
+    <rect x="70" y="20" width="500" height="250" class="cadre" />
+    {zs.map((z) => <g><line x1={X(Math.log10(z))} x2={X(Math.log10(z))} y1="20" y2="270" class="grille" /><text x={X(Math.log10(z))} y="288" text-anchor="middle" class="etiq doux">{txt(z)}</text></g>)}
+    {ds.map((d) => <g><line x1="70" x2="570" y1={Y(Math.log10(d))} y2={Y(Math.log10(d))} class="grille" /><text x="64" y={Y(Math.log10(d)) + 4} text-anchor="end" class="etiq doux">{txt(d)}</text></g>)}
+    <text x="320" y="312" text-anchor="middle" class="etiq doux">décalage spectral z</text>
+    <text x="12" y="145" class="etiq doux" transform="rotate(-90 12 145)" text-anchor="middle">milliards d’années-lumière</text>
+    <path data-c-hubble class="courbe hubble" d="" />
+    <path data-c-phi class="courbe phi" d="" />
+    <path data-c-lum class="courbe lum" d="" />
+    <path data-c-diam class="courbe diam" d="" />
+    <line data-z-ligne y1="20" y2="270" class="curseur" />
+    <g class="legendes">
+      <text x="80" y="40" class="etiq lum">— distance de luminosité</text>
+      <text x="80" y="56" class="etiq phi">— distance propre aujourd’hui</text>
+      <text x="80" y="72" class="etiq diam">— distance de diamètre angulaire</text>
+      <text x="80" y="88" class="etiq hubble">- - loi de Hubble naïve c z / H₀</text>
+    </g>
+  </svg>
+  <div class="controls">
+    <label>Décalage spectral z <input data-z type="range" min="-2" max={ZMAX} step="0.001" value="0" /><output data-z-out></output></label>
+    <label>H₀ (km/s/Mpc) <input data-h type="range" min="50" max="90" step="0.1" value="67.7" /><output data-h-out></output></label>
+    <label>Ωm (matière) <input data-om type="range" min="0.05" max="1" step="0.01" value="0.31" /><output data-om-out></output></label>
+    <label>ΩΛ (constante cosmologique) <input data-ol type="range" min="0" max="1" step="0.01" value="0.69" /><output data-ol-out></output></label>
+    <div class="boutons">
+      <button type="button" data-preset="67.7,0.31,0.69">Planck 2018</button>
+      <button type="button" data-preset="70,1,0">Einstein-de Sitter</button>
+      <button type="button" data-preset="70,0.3,0">Ouvert, sans ΩΛ</button>
+    </div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-phi>–</b><span>distance propre d_φ</span></div>
+    <div><b data-res-lum>–</b><span>distance de luminosité</span></div>
+    <div><b data-res-diam>–</b><span>distance angulaire</span></div>
+    <div><b data-res-regard>–</b><span>temps de parcours de la lumière</span></div>
+    <div><b data-res-age>–</b><span>âge de l’Univers à l’émission</span></div>
+    <div><b data-res-k>–</b><span>géométrie (Ωk)</span></div>
+  </div>
+</div>
+
+<style>
+  .cosmo .cadre{fill:var(--nuit);stroke:var(--trait)}
+  .cosmo .grille{stroke:var(--trait);stroke-width:1}
+  .cosmo path.courbe{fill:none;stroke-width:2.2}
+  .cosmo path.courbe.hubble{stroke-width:1.5}
+  .cosmo .phi{stroke:var(--texte);fill:var(--texte)}
+  .cosmo .lum{stroke:var(--halpha);fill:var(--halpha)}
+  .cosmo .diam{stroke:var(--oiii);fill:var(--oiii)}
+  .cosmo .hubble{stroke:var(--doux);fill:var(--doux);stroke-dasharray:5 4;stroke-width:1.5}
+  .cosmo text.etiq{stroke:none}
+  .cosmo .curseur{stroke:var(--sodium);stroke-width:1.5}
+  .cosmo .etiq{font-family:var(--mono);font-size:12px;fill:var(--texte)}
+  .cosmo .etiq.doux{fill:var(--doux)}
+</style>
+
+<script>
+  import { distancePropre, distanceLuminosite, distanceAngulaire, age, tempsRegard, MPC_GAL, C_KMS, type Cosmo } from '../../lib/distances';
+
+  const fmt = (x: number, d: number) => x.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const ZMIN = -2, ZMAX = Math.log10(1100), DMIN = -2, DMAX = 5;
+  const X = (lz: number) => 70 + (500 * (lz - ZMIN)) / (ZMAX - ZMIN);
+  const Y = (ld: number) => 20 + (250 * (DMAX - Math.max(DMIN - 0.2, Math.min(DMAX + 0.2, ld)))) / (DMAX - DMIN);
+  const gal = (mpc: number) => {
+    const x = mpc * MPC_GAL;
+    return x >= 1 ? `${fmt(x, x >= 100 ? 0 : 1)} milliards d’al` : `${fmt(x * 1000, 0)} millions d’al`;
+  };
+  const duree = (ga: number) => (ga >= 0.01 ? `${fmt(ga, 2)} milliards d’années` : `${fmt(Math.round(ga * 1e6) * 1000, 0)} ans`);
+
+  document.querySelectorAll<HTMLElement>('[data-cosmo]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string, a: Record<string, number | string>) => { const el = q<SVGElement>(s); for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const inZ = q<HTMLInputElement>('[data-z]'), inH = q<HTMLInputElement>('[data-h]');
+    const inOm = q<HTMLInputElement>('[data-om]'), inOl = q<HTMLInputElement>('[data-ol]');
+    const modele = (): Cosmo => ({ H0: +inH.value, Om: +inOm.value, OL: +inOl.value, Or: 9.1e-5 });
+
+    function courbes() {
+      const c = modele();
+      let dPhi = '', dLum = '', dDiam = '', dHub = '';
+      for (let i = 0; i <= 120; i++) {
+        const lz = ZMIN + ((ZMAX - ZMIN) * i) / 120, z = 10 ** lz, x = X(lz).toFixed(1);
+        const phi = distancePropre(z, c) * MPC_GAL;
+        const cmd = i ? 'L' : 'M';
+        dPhi += `${cmd}${x} ${Y(Math.log10(phi)).toFixed(1)}`;
+        dLum += `${cmd}${x} ${Y(Math.log10(phi * (1 + z))).toFixed(1)}`;
+        dDiam += `${cmd}${x} ${Y(Math.log10(phi / (1 + z))).toFixed(1)}`;
+        dHub += `${cmd}${x} ${Y(Math.log10(((C_KMS * z) / c.H0) * MPC_GAL)).toFixed(1)}`;
+      }
+      att('[data-c-phi]', { d: dPhi }); att('[data-c-lum]', { d: dLum });
+      att('[data-c-diam]', { d: dDiam }); att('[data-c-hubble]', { d: dHub });
+      q('[data-h-out]').textContent = fmt(c.H0, 1);
+      q('[data-om-out]').textContent = fmt(c.Om, 2);
+      q('[data-ol-out]').textContent = fmt(c.OL, 2);
+      const ok = 1 - c.Om - c.OL;
+      q('[data-res-k]').textContent = Math.abs(ok) < 0.005 ? 'plate' : ok > 0 ? `ouverte (${fmt(ok, 2)})` : `fermée (${fmt(ok, 2)})`;
+      lecture();
+    }
+
+    function lecture() {
+      const c = modele(), lz = +inZ.value, z = 10 ** lz;
+      att('[data-z-ligne]', { x1: X(lz), x2: X(lz) });
+      q('[data-z-out]').textContent = fmt(z, z < 1 ? 3 : z < 10 ? 2 : 0);
+      q('[data-res-phi]').textContent = gal(distancePropre(z, c));
+      q('[data-res-lum]').textContent = gal(distanceLuminosite(z, c));
+      q('[data-res-diam]').textContent = gal(distanceAngulaire(z, c));
+      q('[data-res-regard]').textContent = duree(tempsRegard(z, c));
+      q('[data-res-age]').textContent = duree(age(z, c));
+    }
+
+    inZ.addEventListener('input', lecture);
+    for (const el of [inH, inOm, inOl]) el.addEventListener('input', courbes);
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => {
+      const [h, om, ol] = b.dataset.preset!.split(',');
+      inH.value = h; inOm.value = om; inOl.value = ol; courbes();
+    }));
+    courbes();
+  });
+</script>

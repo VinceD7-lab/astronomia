@@ -40,6 +40,7 @@
 .prose .math-display{margin:1.2rem 0;overflow-x:auto;overflow-y:hidden}
 .prose math[display="block"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.2rem 0}
 .prose img{max-width:100%;height:auto}
+.prose a{overflow-wrap:anywhere}
 .prose table{border-collapse:collapse;width:100%;font-size:.95rem;margin:1.2rem 0}
 .prose th,.prose td{border-bottom:1px solid var(--trait);padding:.45rem .6rem;text-align:left}
 .prose th{font-family:var(--titre);font-weight:600;color:var(--doux)}

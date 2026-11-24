@@ -1,0 +1,118 @@
+---
+/**
+ * Mouvement parabolique : un corps lancé horizontalement combine un mouvement uniforme (inertie)
+ * et une chute accélérée (gravité). Remplace l’animation « canon » du site d’origine.
+ */
+---
+<div class="sim canon" data-canon data-pagefind-ignore>
+  <svg viewBox="0 0 600 380" role="img" aria-label="Un canon tire horizontalement depuis le sommet d’une falaise ; le boulet suit une parabole. Des marques sur les axes montrent un déplacement horizontal régulier et une chute de plus en plus rapide.">
+    <line x1="60" y1="60" x2="590" y2="60" class="axe" />
+    <line x1="60" y1="60" x2="60" y2="370" class="axe" />
+    <rect data-sol x="0" y="350" width="600" height="30" class="sol" />
+    <rect x="0" y="60" width="60" height="320" class="falaise" />
+    <g transform="translate(36 50)"><rect x="-6" y="-6" width="30" height="12" rx="4" class="fut" /><circle cx="2" cy="8" r="7" class="roue" /></g>
+    <g data-marques-x></g><g data-marques-y></g>
+    <path data-trajectoire class="trajectoire" d="" />
+    <line data-proj-x class="proj" /><line data-proj-y class="proj" />
+    <line data-v-in class="fleche inertie" /><line data-v-g class="fleche gravite" /><line data-v class="fleche vitesse" />
+    <circle data-boulet r="7" class="boulet" />
+    <text x="70" y="30" class="etiq inertie">— vitesse inertielle</text>
+    <text x="250" y="30" class="etiq gravite">— gravité</text>
+    <text x="380" y="30" class="etiq vitesse">— vitesse</text>
+  </svg>
+  <div class="controls">
+    <label>Vitesse du tir <input data-vit type="range" min="0" max="100" step="1" value="50" /><output data-vit-out></output></label>
+    <label>Gravité <input data-g type="range" min="0" max="100" step="1" value="50" /><output data-g-out></output></label>
+    <label class="case"><input data-proj type="checkbox" checked /> Projections sur les axes</label>
+    <div class="boutons">
+      <button type="button" data-lecture aria-pressed="false">▶ Lecture</button>
+      <button type="button" data-tir>Nouveau tir</button>
+    </div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-t>–</b><span>temps écoulé</span></div>
+    <div><b data-res-x>–</b><span>distance horizontale</span></div>
+    <div><b data-res-y>–</b><span>hauteur de chute</span></div>
+  </div>
+</div>
+
+<style>
+  .canon .axe{stroke:var(--doux);stroke-width:1}
+  .canon .sol{fill:var(--voute-2)}
+  .canon .falaise{fill:var(--voute-2);stroke:var(--trait)}
+  .canon .fut{fill:var(--doux)}
+  .canon .roue{fill:var(--trait);stroke:var(--doux)}
+  .canon .trajectoire{fill:none;stroke:var(--doux);stroke-dasharray:4 4;stroke-width:1.5}
+  .canon .proj{stroke:var(--trait);stroke-dasharray:2 3}
+  .canon .fleche{stroke-width:2.5;stroke-linecap:round}
+  .canon .inertie{stroke:var(--oiii);fill:var(--oiii)}
+  .canon .gravite{stroke:var(--halpha);fill:var(--halpha)}
+  .canon .vitesse{stroke:var(--sodium);fill:var(--sodium)}
+  .canon text.etiq{stroke:none;font-family:var(--mono);font-size:12px}
+  .canon .boulet{fill:var(--texte);stroke:var(--nuit);stroke-width:1.5}
+  .canon .marque{stroke:var(--texte);stroke-width:2}
+  .canon :global(.case){flex-direction:row!important;align-items:center;gap:.4rem!important}
+</style>
+
+<script>
+  import { tirHorizontal } from '../../lib/mecanique';
+  import { animer, fmt } from '../../lib/animation';
+  const NS = 'http://www.w3.org/2000/svg';
+
+  document.querySelectorAll<HTMLElement>('[data-canon]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string | Element, a: Record<string, number | string>) => { const el = typeof s === 'string' ? q<SVGElement>(s) : s; for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const inV = q<HTMLInputElement>('[data-vit]'), inG = q<HTMLInputElement>('[data-g]'), inP = q<HTMLInputElement>('[data-proj]');
+    const O = { x: 60, y: 60 }, HAUT = 290;            // départ et hauteur de la falaise (px)
+    let t = 0;
+
+    // vitesse en px/s et gravité en px/s² : réglages « moyens » au milieu des curseurs
+    const v = () => 2.4 * +inV.value, g = () => 1.6 * +inG.value;
+    const tFin = () => {
+      const tChute = g() > 0 ? Math.sqrt((2 * HAUT) / g()) : Infinity;
+      const tBord = v() > 0 ? (590 - O.x) / v() : Infinity;
+      return Math.min(tChute, tBord, 12);
+    };
+
+    function marques() {
+      const gx = q<SVGGElement>('[data-marques-x]'), gy = q<SVGGElement>('[data-marques-y]');
+      gx.replaceChildren(); gy.replaceChildren();
+      for (let s = 1; s <= Math.floor(tFin()); s++) {
+        const p = tirHorizontal(v(), g(), s);
+        if (v() > 0 && O.x + p.x < 590) { const l = document.createElementNS(NS, 'line'); att(l, { x1: O.x + p.x, x2: O.x + p.x, y1: O.y - 5, y2: O.y + 5, class: 'marque inertie' }); gx.append(l); }
+        if (g() > 0 && O.y + p.y < 350) { const l = document.createElementNS(NS, 'line'); att(l, { x1: O.x - 5, x2: O.x + 5, y1: O.y + p.y, y2: O.y + p.y, class: 'marque gravite' }); gy.append(l); }
+      }
+      let d = '';
+      for (let i = 0; i <= 80; i++) { const p = tirHorizontal(v(), g(), (tFin() * i) / 80); d += `${i ? 'L' : 'M'}${(O.x + p.x).toFixed(1)} ${(O.y + p.y).toFixed(1)}`; }
+      att('[data-trajectoire]', { d });
+      q<SVGRectElement>('[data-sol]').style.display = g() > 0 ? '' : 'none';
+    }
+
+    function dessine() {
+      const p = tirHorizontal(v(), g(), t), x = O.x + p.x, y = O.y + p.y, k = 0.35;
+      att('[data-boulet]', { cx: x, cy: y });
+      att('[data-proj-x]', { x1: x, y1: y, x2: x, y2: O.y }); att('[data-proj-y]', { x1: x, y1: y, x2: O.x, y2: y });
+      for (const s of ['[data-proj-x]', '[data-proj-y]']) q<SVGElement>(s).style.display = inP.checked ? '' : 'none';
+      att('[data-v-in]', { x1: x, y1: y, x2: x + k * v(), y2: y });
+      att('[data-v-g]', { x1: x, y1: y, x2: x, y2: y + k * g() * t });
+      att('[data-v]', { x1: x, y1: y, x2: x + k * v(), y2: y + k * g() * t });
+      q('[data-vit-out]').textContent = +inV.value ? `${inV.value} %` : 'nulle';
+      q('[data-g-out]').textContent = +inG.value ? `${inG.value} %` : 'nulle (apesanteur)';
+      q('[data-res-t]').textContent = `${fmt(t, 1)} s`;
+      q('[data-res-x]').textContent = fmt(p.x / 24, 1);
+      q('[data-res-y]').textContent = fmt(p.y / 24, 1);
+    }
+
+    let attente = 0;
+    const anim = animer(root, q('[data-lecture]'), (dt) => {
+      // le boulet vole jusqu’au sol (ou au bord), reste une seconde, puis un nouveau tir part
+      if (t < tFin()) t = Math.min(t + dt, tFin());
+      else if ((attente += dt) > 1) { t = 0; attente = 0; }
+      dessine();
+    });
+    const regler = () => { t = 0; attente = 0; marques(); dessine(); anim.relancer(); };
+    inV.addEventListener('input', regler); inG.addEventListener('input', regler); inP.addEventListener('change', dessine);
+    q('[data-tir]').addEventListener('click', regler);
+    marques(); dessine();
+  });
+</script>

@@ -1,0 +1,108 @@
+---
+/**
+ * Orbite képlérienne : la planète parcourt une ellipse dont l’étoile occupe un foyer, plus vite près
+ * de l’étoile, en balayant des aires égales en des temps égaux. Remplace l’animation « parcours
+ * d’une orbite képlérienne » du site d’origine.
+ */
+interface Props { e?: number }
+const { e = 0 } = Astro.props;
+---
+<div class="sim kepler" data-kepler data-pagefind-ignore data-e={e}>
+  <svg viewBox="0 0 600 400" role="img" aria-label="Une planète tourne autour d’une étoile sur une ellipse ; des secteurs colorés montrent les aires balayées pendant des durées égales.">
+    <g data-aires></g>
+    <ellipse data-orbite class="orbite" />
+    <path data-parcours class="parcours" d="" />
+    <line data-rayon class="rayon" />
+    <circle data-etoile r="9" class="etoile" />
+    <circle data-planete r="7" class="planete" />
+    <text data-peri class="etiq doux" text-anchor="start">périhélie</text>
+    <text data-aphe class="etiq doux" text-anchor="end">aphélie</text>
+  </svg>
+  <div class="controls">
+    <label>Excentricité <input data-e type="range" min="0" max="0.95" step="0.01" /><output data-e-out></output></label>
+    <label>Vitesse d’animation <input data-v type="range" min="0.2" max="3" step="0.1" value="1" /><output data-v-out></output></label>
+    <label class="case"><input data-orb type="checkbox" checked /> Orbite</label>
+    <label class="case"><input data-air type="checkbox" checked /> Aires</label>
+    <div class="boutons"><button type="button" data-lecture aria-pressed="false">▶ Lecture</button></div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-e>–</b><span>excentricité</span></div>
+    <div><b data-res-r>–</b><span>distance (demi-grand axe = 1)</span></div>
+    <div><b data-res-v>–</b><span>vitesse (orbite circulaire = 1)</span></div>
+  </div>
+  <p class="legende">Chaque secteur coloré est balayé pendant un douzième de la période : ils ont tous la même aire (deuxième loi de Kepler).</p>
+</div>
+
+<style>
+  .kepler .orbite{fill:none;stroke:var(--doux);stroke-width:1.2}
+  .kepler .parcours{fill:none;stroke:var(--sodium);stroke-width:2}
+  .kepler .rayon{stroke:var(--texte);stroke-width:1}
+  .kepler .etoile{fill:var(--halpha)}
+  .kepler .planete{fill:var(--oiii);stroke:var(--nuit);stroke-width:1.5}
+  .kepler .etiq{font-family:var(--mono);font-size:12px;fill:var(--texte)}
+  .kepler .etiq.doux{fill:var(--doux)}
+  .kepler :global(.secteur){stroke:var(--nuit);stroke-width:.8;opacity:.55}
+  .kepler :global(.secteur.pair){fill:var(--oiii)}
+  .kepler :global(.secteur.impair){fill:var(--sodium)}
+  .kepler :global(.case){flex-direction:row!important;align-items:center;gap:.4rem!important;flex:0 1 auto!important;min-width:0!important}
+</style>
+
+<script>
+  import { etatKepler } from '../../lib/mecanique';
+  import { animer, fmt } from '../../lib/animation';
+  const NS = 'http://www.w3.org/2000/svg';
+  const TOUR = 2 * Math.PI;
+
+  document.querySelectorAll<HTMLElement>('[data-kepler]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string | Element, a: Record<string, number | string>) => { const el = typeof s === 'string' ? q<SVGElement>(s) : s; for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const inE = q<HTMLInputElement>('[data-e]'), inV = q<HTMLInputElement>('[data-v]');
+    const inO = q<HTMLInputElement>('[data-orb]'), inA = q<HTMLInputElement>('[data-air]');
+    inE.value = root.dataset.e!;
+    let M = 0, S = 150, OX = 300;                     // anomalie moyenne, échelle, abscisse de l’étoile
+    const OY = 200;
+    const X = (x: number) => OX + S * x, Y = (y: number) => OY - S * y;
+
+    function regler() {
+      const e = +inE.value;
+      const b = Math.sqrt(1 - e * e);
+      S = Math.min(270, 180 / b);                      // l’ellipse (2S × 2bS) tient dans le cadre
+      OX = 300 + S * e;                                // centre de l’ellipse au milieu du cadre
+      att('[data-orbite]', { cx: X(-e), cy: Y(0), rx: S, ry: S * b });
+      att('[data-etoile]', { cx: X(0), cy: Y(0) });
+      att('[data-peri]', { x: X(1 - e) + 8, y: Y(0) + 4 });
+      att('[data-aphe]', { x: X(-1 - e) - 8, y: Y(0) + 4 });
+      // douze secteurs balayés en des temps égaux
+      const g = q<SVGGElement>('[data-aires]'); g.replaceChildren();
+      for (let k = 0; k < 12; k++) {
+        let d = `M${X(0)} ${Y(0)}`;
+        for (let i = 0; i <= 24; i++) { const s = etatKepler((TOUR * (k + i / 24)) / 12, e); d += `L${X(s.x).toFixed(1)} ${Y(s.y).toFixed(1)}`; }
+        const p = document.createElementNS(NS, 'path'); att(p, { d: d + 'Z', class: `secteur ${k % 2 ? 'impair' : 'pair'}` }); g.append(p);
+      }
+      q('[data-e-out]').textContent = fmt(e, 2);
+      dessine();
+    }
+
+    function dessine() {
+      const e = +inE.value, s = etatKepler(M % TOUR, e);
+      att('[data-planete]', { cx: X(s.x), cy: Y(s.y) });
+      att('[data-rayon]', { x1: X(0), y1: Y(0), x2: X(s.x), y2: Y(s.y) });
+      // trace du parcours depuis le début du tour
+      let d = '';
+      const m = M % TOUR, n = Math.max(2, Math.ceil(m / 0.04));
+      for (let i = 0; i <= n; i++) { const p = etatKepler((m * i) / n, e); d += `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(p.y).toFixed(1)}`; }
+      att('[data-parcours]', { d });
+      q<SVGElement>('[data-orbite]').style.display = inO.checked ? '' : 'none';
+      q<SVGElement>('[data-aires]').style.display = inA.checked ? '' : 'none';
+      q('[data-res-e]').textContent = fmt(e, 2);
+      q('[data-res-r]').textContent = fmt(s.r, 3);
+      q('[data-res-v]').textContent = fmt(s.v, 3);
+      q('[data-v-out]').textContent = `× ${fmt(+inV.value, 1)}`;
+    }
+
+    const anim = animer(root, q('[data-lecture]'), (dt) => { M += dt * 0.6 * +inV.value; dessine(); });
+    inE.addEventListener('input', () => { M = 0; regler(); anim.relancer(); });
+    inV.addEventListener('input', dessine); inO.addEventListener('change', dessine); inA.addEventListener('change', dessine);
+    regler();
+  });
+</script>

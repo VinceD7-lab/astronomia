@@ -11,7 +11,7 @@
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
-    "test": "node --experimental-strip-types scripts/test-comput.ts && node --experimental-strip-types scripts/test-cosmogonie.ts && node --experimental-strip-types scripts/test-distances.ts",
+    "test": "node --experimental-strip-types scripts/test-comput.ts && node --experimental-strip-types scripts/test-cosmogonie.ts && node --experimental-strip-types scripts/test-distances.ts && node --experimental-strip-types scripts/test-mecanique.ts",
     "astro": "astro"
   },
   "dependencies": {

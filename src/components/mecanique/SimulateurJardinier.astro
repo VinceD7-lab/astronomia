@@ -1,0 +1,82 @@
+---
+/**
+ * Méthode du jardinier : une ficelle attachée à deux épingles (les foyers), tendue par un crayon,
+ * trace une ellipse. Remplace l’animation « tracé d’une ellipse » du site d’origine.
+ */
+---
+<div class="sim jardinier" data-jardinier data-pagefind-ignore>
+  <svg viewBox="0 0 600 380" role="img" aria-label="Deux épingles reliées par une ficelle tendue par un crayon, qui trace une ellipse sur une feuille.">
+    <rect x="40" y="20" width="520" height="340" rx="6" class="feuille" />
+    <ellipse data-complete class="complete" />
+    <path data-trace class="trace" d="" />
+    <polyline data-ficelle class="ficelle" />
+    <circle data-f1 r="5" class="epingle" /><circle data-f2 r="5" class="epingle" />
+    <text data-f1-txt class="etiq" text-anchor="middle">F</text><text data-f2-txt class="etiq" text-anchor="middle">F′</text>
+    <circle data-crayon r="6" class="crayon" />
+  </svg>
+  <div class="controls">
+    <label>Excentricité <input data-e type="range" min="0" max="0.95" step="0.01" value="0.6" /><output data-e-out></output></label>
+    <label>Vitesse <input data-v type="range" min="0.1" max="2" step="0.1" value="1" /><output data-v-out></output></label>
+    <label class="case"><input data-tout type="checkbox" /> Ellipse complète</label>
+    <div class="boutons"><button type="button" data-lecture aria-pressed="false">▶ Lecture</button></div>
+  </div>
+  <div class="readout" aria-live="polite">
+    <div><b data-res-1>–</b><span>distance au foyer F</span></div>
+    <div><b data-res-2>–</b><span>distance au foyer F′</span></div>
+    <div><b data-res-s>–</b><span>somme (longueur de la ficelle)</span></div>
+  </div>
+</div>
+
+<style>
+  .jardinier .feuille{fill:var(--nuit);stroke:var(--trait)}
+  .jardinier .complete{fill:none;stroke:var(--doux);stroke-dasharray:3 4}
+  .jardinier .trace{fill:none;stroke:var(--sodium);stroke-width:2.5}
+  .jardinier .ficelle{fill:none;stroke:var(--texte);stroke-width:1.3}
+  .jardinier .epingle{fill:var(--halpha)}
+  .jardinier .crayon{fill:var(--oiii);stroke:var(--nuit);stroke-width:1.5}
+  .jardinier .etiq{font-family:var(--mono);font-size:13px;fill:var(--texte)}
+  .jardinier :global(.case){flex-direction:row!important;align-items:center;gap:.4rem!important}
+</style>
+
+<script>
+  import { ellipse, pointEllipse } from '../../lib/mecanique';
+  import { animer, fmt } from '../../lib/animation';
+
+  document.querySelectorAll<HTMLElement>('[data-jardinier]').forEach((root) => {
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const att = (s: string, a: Record<string, number | string>) => { const el = q<SVGElement>(s); for (const [k, v] of Object.entries(a)) el.setAttribute(k, String(v)); };
+    const inE = q<HTMLInputElement>('[data-e]'), inV = q<HTMLInputElement>('[data-v]'), inT = q<HTMLInputElement>('[data-tout]');
+    const C = { x: 300, y: 190 }, A = 220;
+    let t = 0.0001;   // angle parcouru par le crayon depuis le début du tracé
+
+    function dessine() {
+      const e = +inE.value, { b, c } = ellipse(A, e);
+      const P = pointEllipse(A, e, t), X = C.x + P.x, Y = C.y - P.y;
+      att('[data-complete]', { cx: C.x, cy: C.y, rx: A, ry: b });
+      q<SVGElement>('[data-complete]').style.display = inT.checked ? '' : 'none';
+      att('[data-f1]', { cx: C.x + c, cy: C.y }); att('[data-f2]', { cx: C.x - c, cy: C.y });
+      att('[data-f1-txt]', { x: C.x + c, y: C.y + 22 }); att('[data-f2-txt]', { x: C.x - c, y: C.y + 22 });
+      att('[data-ficelle]', { points: `${C.x + c},${C.y} ${X},${Y} ${C.x - c},${C.y}` });
+      att('[data-crayon]', { cx: X, cy: Y });
+      let d = '';
+      const n = Math.max(2, Math.ceil(t / 0.03));
+      for (let i = 0; i <= n; i++) { const Q = pointEllipse(A, e, (t * i) / n); d += `${i ? 'L' : 'M'}${(C.x + Q.x).toFixed(1)} ${(C.y - Q.y).toFixed(1)}`; }
+      att('[data-trace]', { d });
+      const d1 = Math.hypot(P.x - c, P.y), d2 = Math.hypot(P.x + c, P.y), u = 1 / A;   // en demi-grands axes
+      q('[data-res-1]').textContent = fmt(d1 * u, 2);
+      q('[data-res-2]').textContent = fmt(d2 * u, 2);
+      q('[data-res-s]').textContent = `${fmt((d1 + d2) * u, 2)} = 2 a`;
+      q('[data-e-out]').textContent = fmt(e, 2);
+      q('[data-v-out]').textContent = `× ${fmt(+inV.value, 1)}`;
+    }
+
+    const anim = animer(root, q('[data-lecture]'), (dt) => {
+      t += dt * 1.2 * +inV.value;
+      if (t > 2 * Math.PI + 1.5) t = 0.0001;          // l’ellipse reste affichée un instant, puis on recommence
+      const tt = t; t = Math.min(t, 2 * Math.PI); dessine(); t = tt;
+    });
+    inE.addEventListener('input', () => { t = 0.0001; dessine(); anim.relancer(); });
+    inV.addEventListener('input', dessine); inT.addEventListener('change', dessine);
+    t = 2.2; dessine();
+  });
+</script>

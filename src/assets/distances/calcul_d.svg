@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 442 318" width="442" height="318" font-family="Arial, Helvetica, sans-serif" font-size="12" text-anchor="middle">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#000"/>
+    </marker>
+  </defs>
+  <rect width="442" height="318" fill="#ccffcc"/>
+  <ellipse cx="115" cy="82" rx="97" ry="42" fill="#fff" stroke="#000"/>
+  <text x="115" y="55" font-size="11">observées</text>
+  <g font-weight="bold">
+    <text x="127" y="90">m</text>
+    <text x="84" y="124">P</text>
+    <text x="156" y="124">B − V</text>
+    <text x="290" y="242" font-size="14">M</text>
+  </g>
+  <g fill="none" stroke="#000">
+    <line x1="140" y1="85" x2="268" y2="85" marker-end="url(#a)"/>
+    <line x1="84" y1="132" x2="84" y2="200" marker-end="url(#a)"/>
+    <line x1="156" y1="132" x2="156" y2="200" marker-end="url(#a)"/>
+    <path d="M20 232Q20 240 28 240L105 240Q115 240 115 250Q115 240 125 240L202 240Q212 240 212 232"/>
+    <path d="M115 254Q120 292 200 292Q288 292 290 252" marker-end="url(#a)"/>
+    <line x1="290" y1="228" x2="290" y2="106" marker-end="url(#a)"/>
+    <path d="M290 68Q295 30 340 30Q390 30 395 72" marker-end="url(#a)"/>
+    <path d="M272 98Q272 104 278 104L283 104Q290 104 290 109Q290 104 297 104L302 104Q308 104 308 98"/>
+  </g>
+  <g text-anchor="start">
+    <text x="272" y="89">m − M = 5 − 5 log</text>
+    <text x="20" y="228">−3,10 log P + 1,70 (B − V) − 2,37</text>
+    <text x="236" y="228">=</text>
+  </g>
+  <circle cx="400" cy="85" r="12" fill="#fff" stroke="#e00"/>
+  <text x="400" y="90" fill="#e00" font-weight="bold">d</text>
+  <g>
+    <text x="93" y="170">1</text>
+    <text x="165" y="170">1</text>
+    <text x="200" y="310">2</text>
+    <text x="302" y="170">3</text>
+    <text x="205" y="78">3</text>
+    <text x="345" y="24">4</text>
+  </g>
+</svg>

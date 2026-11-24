@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 331 244" width="331" height="244" font-family="Arial, Helvetica, sans-serif" font-size="12">
+  <defs>
+    <g id="oeil">
+      <path d="M0 0L-22 -12Q-30 0 -22 12Z" fill="#fff" stroke="#000"/>
+      <circle cx="-3" cy="0" r="4" fill="#000"/>
+    </g>
+  </defs>
+  <rect width="331" height="244" fill="#ccffcc"/>
+  <path d="M40 87L135 14V153L40 226Z" fill="#fff" stroke="#000"/>
+  <g stroke="#000" stroke-dasharray="5 3" fill="none">
+    <line x1="68" y1="130" x2="218" y2="178"/>
+    <line x1="68" y1="130" x2="292" y2="190"/>
+    <line x1="110" y1="95" x2="218" y2="178"/>
+    <line x1="110" y1="95" x2="275" y2="210"/>
+  </g>
+  <g transform="translate(110 95) rotate(30)" fill="none" stroke="#e00" stroke-width="3" stroke-linecap="round">
+    <path d="M-8 -3Q0 -9 8 -3M-8 3Q0 9 8 3M-8 -3L-5 3M8 -3L5 3"/>
+  </g>
+  <g transform="translate(68 130)" stroke="#e00" stroke-width="1.5" stroke-linecap="round">
+    <path d="M-9 0H9M0 -9V9M-6 -6L6 6M-6 6L6 -6"/>
+  </g>
+  <use href="#oeil" x="305" y="190" transform="rotate(-8 305 190)"/>
+  <use href="#oeil" x="285" y="212" transform="rotate(-8 285 212)"/>
+  <g stroke="#000" stroke-linejoin="round">
+    <path d="M214 168V182H212V186H224V182H222V172H218V168Z" fill="#fff"/>
+    <rect x="212" y="186" width="12" height="6" fill="#000"/>
+  </g>
+  <text x="16" y="165">mur</text>
+  <text x="200" y="144">doigt</text>
+</svg>

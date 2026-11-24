@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 713 299" width="713" height="299" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle">
+  <rect width="713" height="299" fill="#ccffcc"/>
+  <g fill="none" stroke="#000">
+    <circle cx="143" cy="161" r="118"/>
+    <line x1="143" y1="43" x2="143" y2="161"/>
+    <line x1="143" y1="161" x2="687" y2="161"/>
+    <line x1="143" y1="43" x2="687" y2="161"/>
+  </g>
+  <circle cx="143" cy="161" r="4" fill="#f00"/>
+  <text x="143" y="34">Terre</text>
+  <text x="112" y="112">1 UA</text>
+  <text x="148" y="190">Soleil</text>
+  <text x="394" y="182">1 pc</text>
+  <text x="567" y="154">1"</text>
+</svg>

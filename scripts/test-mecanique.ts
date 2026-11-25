@@ -1,5 +1,5 @@
 /** Vérifie les calculs de mécanique (src/lib/mecanique.ts). Lancé par `npm test`. */
-import { anomalieExcentrique, etatKepler, pointEllipse, ellipse, tirHorizontal } from '../src/lib/mecanique.ts';
+import { anomalieExcentrique, etatKepler, pointEllipse, ellipse, tirHorizontal, integrationTableur } from '../src/lib/mecanique.ts';
 
 let echecs = 0;
 function verifie(nom: string, ok: boolean, detail = '') {
@@ -55,6 +55,14 @@ for (const e of [0, 0.3, 0.8]) {
   const a = tirHorizontal(3, 10, 1), b = tirHorizontal(3, 10, 2);
   verifie('mouvement uniforme', proche(b.x, 2 * a.x));
   verifie('chute en t²', proche(b.y, 4 * a.y));
+}
+
+// Tableur du chapitre : 47 lignes, y monte de 3 000 m par pas (vy·dt), x recule d’environ 6 mm.
+{
+  const t = integrationTableur();
+  verifie('tableur : 47 points', t.length === 47);
+  verifie('tableur : y final', proche(t[46].y, 138000, 1e-3), `: ${t[46].y}`);
+  verifie('tableur : recul de x', t[46].dx < -0.0055 && t[46].dx > -0.0065, `: ${t[46].dx}`);
 }
 
 if (echecs) { console.error(`\nmecanique.ts : ${echecs} échec(s)`); process.exit(1); }

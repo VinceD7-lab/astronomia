@@ -1,0 +1,39 @@
+---
+/**
+ * Ellipse képlérienne et cercle principal : la planète P, sa contre-projection P′ sur le cercle,
+ * sa projection H sur le grand axe, l’anomalie excentrique u et l’anomalie vraie v (redessiné d’après J. Gispert).
+ */
+import Figure from '../../chapitre/Figure.astro';
+import { trait, texte, point, courbe, pointsEllipse, arcAngle, type P2 } from '../../../lib/schema';
+
+const O: P2 = [262, 262], a = 200, b = 130, c = Math.sqrt(a * a - b * b);
+const S: P2 = [O[0] + c, O[1]], S2: P2 = [O[0] - c, O[1]], A: P2 = [O[0] + a, O[1]];
+const u = (58 * Math.PI) / 180;                                    // anomalie excentrique
+const Pp: P2 = [O[0] + a * Math.cos(u), O[1] - a * Math.sin(u)];   // P′ sur le cercle
+const P: P2 = [Pp[0], O[1] - b * Math.sin(u)];                     // P sur l’ellipse
+const H: P2 = [Pp[0], O[1]];
+const v = Math.atan2(O[1] - P[1], P[0] - S[0]);                     // anomalie vraie
+
+let s = courbe(pointsEllipse(O, a, a), { couleur: 'var(--doux)', epaisseur: 1.3, tirets: '6 5' });
+s += courbe(pointsEllipse(O, a, b), { couleur: 'var(--oiii)', epaisseur: 2.4, remplir: 'var(--oiii)', opacite: 0.07, ferme: true });
+s += trait([30, O[1]], [512, O[1]], { couleur: 'var(--doux)', epaisseur: 1.1, fleche: 'fin' });
+s += trait([O[0], 500], [O[0], 30], { couleur: 'var(--doux)', epaisseur: 1.1, fleche: 'fin' });
+s += trait(O, Pp, { couleur: 'var(--sodium)', epaisseur: 1.6 });
+s += trait(S, P, { couleur: 'var(--halpha)', epaisseur: 2 });
+s += trait(Pp, H, { tirets: '5 4', epaisseur: 1.2 });
+s += arcAngle(O, 46, 0, u, { couleur: 'var(--sodium)' }) + texte([O[0] + 58 * Math.cos(u / 2), O[1] - 58 * Math.sin(u / 2)], 'u', { italique: true, taille: 18, couleur: 'var(--sodium)', dy: 6 });
+s += arcAngle(S, 34, 0, v, { couleur: 'var(--halpha)' }) + texte([S[0] + 46 * Math.cos(v / 2), S[1] - 46 * Math.sin(v / 2)], 'v', { italique: true, taille: 18, couleur: 'var(--halpha)', dy: 6 });
+s += point(S, 7, 'var(--sodium)') + point(S2, 4, 'var(--doux)') + point(O, 3.5) + point(H, 3.5) + point(A, 4, 'var(--oiii)');
+s += point(Pp, 4.5) + point(P, 5, 'var(--oiii)');
+s += point([O[0], O[1] - a], 4, 'var(--doux)') + point([O[0], O[1] - b], 4, 'var(--oiii)');
+s += texte(Pp, 'P′', { dx: 8, dy: -6, italique: true, taille: 17 }) + texte(P, 'P', { dx: 9, dy: 4, italique: true, taille: 17 });
+s += texte(O, 'O', { dx: -10, dy: 22, ancre: 'end', italique: true, taille: 17 });
+s += texte(S, 'S', { dx: -6, dy: 24, ancre: 'end', italique: true, taille: 17 });
+s += texte(S2, 'S′', { dy: 24, ancre: 'middle', italique: true, taille: 17, couleur: 'var(--doux)' });
+s += texte(H, 'H', { dx: 4, dy: 22, italique: true, taille: 17 });
+s += texte(A, 'A', { dx: 6, dy: 22, italique: true, taille: 17 });
+s += texte([O[0], O[1] - a], 'B′', { dx: -10, dy: -8, ancre: 'end', italique: true, taille: 17, couleur: 'var(--doux)' });
+s += texte([O[0], O[1] - b], 'B', { dx: -10, dy: -8, ancre: 'end', italique: true, taille: 17 });
+s += texte([40, 30], 'cercle principal', { couleur: 'var(--doux)', taille: 14 }) + texte([40, 48], 'orbite', { couleur: 'var(--oiii)', taille: 14 });
+---
+<Figure titre="Orbite elliptique de foyer S et son cercle principal de centre O : la planète P, sa contre-projection P′ sur le cercle, sa projection H sur le grand axe ; u = (OA, OP′) est l’anomalie excentrique, v = (SA, SP) l’anomalie vraie." largeur={540} hauteur={520} svg={s}><slot /></Figure>

@@ -1,0 +1,30 @@
+---
+/**
+ * Résultat de l’intégration numérique du tableur : les 47 positions successives de la planète.
+ * Les points sont recalculés avec les formules des cellules (src/lib/mecanique.ts).
+ */
+import Figure from '../../chapitre/Figure.astro';
+import { trait, texte, type P2 } from '../../../lib/schema';
+import { integrationTableur } from '../../../lib/mecanique';
+
+const X0 = 96, X1 = 560, Y0 = 330, Y1 = 34;                 // cadre : x de −8 mm à 0, y de 0 à 150 000 m
+const px = (mm: number) => X1 + ((X1 - X0) * mm) / 8, py = (m: number) => Y0 - ((Y0 - Y1) * m) / 150000;
+
+let s = '';
+for (const v of [-8, -6, -4, -2, 0]) {
+  s += trait([px(v), Y0], [px(v), Y1], { couleur: 'var(--trait)', epaisseur: 1 });
+  s += texte([px(v), Y0], v ? `${v}`.replace('-', '−') : '0', { dy: 20, ancre: 'middle', taille: 14, couleur: 'var(--doux)' });
+}
+for (const v of [0, 37500, 75000, 112500, 150000]) {
+  s += trait([X0, py(v)], [X1, py(v)], { couleur: 'var(--trait)', epaisseur: 1 });
+  s += texte([X0, py(v)], v.toLocaleString('fr-FR'), { dx: -8, dy: 5, ancre: 'end', taille: 14, couleur: 'var(--doux)' });
+}
+s += trait([X0, Y0], [X1 + 14, Y0], { couleur: 'var(--doux)', fleche: 'fin' }) + trait([X0, Y0], [X0, Y1 - 14], { couleur: 'var(--doux)', fleche: 'fin' });
+for (const p of integrationTableur()) {
+  const c: P2 = [px(p.dx * 1000), py(p.y)];
+  s += trait([c[0] - 5, c[1]], [c[0] + 5, c[1]], { couleur: 'var(--oiii)', epaisseur: 1.8 }) + trait([c[0], c[1] - 5], [c[0], c[1] + 5], { couleur: 'var(--oiii)', epaisseur: 1.8 });
+}
+s += texte([(X0 + X1) / 2, Y0], 'x − 1,5·10¹¹ m (en millimètres)', { dy: 44, ancre: 'middle', taille: 15 });
+s += texte([X0, Y1 - 18], 'y (en mètres)', { dx: 10, taille: 15 });
+---
+<Figure titre="Positions successives de la planète calculées par le tableur, de dixième de seconde en dixième de seconde : un arc de courbe qui s’incurve vers le Soleil." largeur={600} hauteur={392} svg={s}><slot /></Figure>

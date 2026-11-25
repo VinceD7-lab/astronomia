@@ -1,0 +1,57 @@
+---
+/**
+ * Orbite de transfert de Hohmann entre deux orbites circulaires (redessiné d’après J. Gispert).
+ * etape « transfert » : l’ellipse complète tangente aux deux orbites en A et D ;
+ * « trajet » et « lancement » : le voyage vers Jupiter (demi-ellipse), sans puis avec la position de Jupiter au départ.
+ */
+import Figure from '../../chapitre/Figure.astro';
+import { trait, texte, point, courbe, pointsEllipse, pointe, ind, arcAngle, type P2 } from '../../../lib/schema';
+interface Props { etape?: 'transfert' | 'trajet' | 'lancement' }
+const { etape = 'transfert' } = Astro.props;
+
+const W = 520, O: P2 = [W / 2, 262], RJ = 222, RT = 62;
+const aT = (RJ + RT) / 2, bT = Math.sqrt(RJ * RT), cT: P2 = [O[0] + aT - RT, O[1]];   // ellipse de transfert, foyer au Soleil
+const D: P2 = [O[0] - RT, O[1]], Ar: P2 = [O[0] + RJ, O[1]];                          // départ (Terre) et arrivée
+const L0 = '<tspan>L</tspan><tspan dy="4" font-size="0.72em">0</tspan><tspan dy="-4">';
+
+let s = courbe(pointsEllipse(O, RJ, RJ), { couleur: 'var(--doux)', epaisseur: 1.4 });
+s += courbe(pointsEllipse(O, RT, RT), { couleur: 'var(--oiii)', epaisseur: 1.6 });
+if (etape === 'transfert') {
+  s += courbe(pointsEllipse(cT, aT, bT), { couleur: 'var(--halpha)', epaisseur: 2.2 });
+  s += point(D, 4.5, 'var(--halpha)') + point(Ar, 4.5, 'var(--halpha)');
+  s += texte(D, 'A', { dx: -10, dy: 6, ancre: 'end', italique: true, taille: 19 }) + texte(Ar, 'D', { dx: -12, dy: 6, ancre: 'end', italique: true, taille: 19 });
+} else {
+  // demi-ellipse parcourue dans le sens direct (vers le bas à l’écran), avec une flèche de sens
+  const demi = pointsEllipse(cT, aT, bT, Math.PI, 2 * Math.PI, 90);
+  s += courbe(demi, { couleur: 'var(--halpha)', epaisseur: 2.4 }) + pointe(demi[44], demi[48], 'var(--halpha)', 12);
+  s += texte([O[0], O[1] - RJ], 'orbite de Jupiter', { dy: 22, ancre: 'middle', couleur: 'var(--doux)', taille: 15 });
+  s += texte([O[0], O[1] - RT], 'orbite de la Terre', { dy: -10, ancre: 'middle', couleur: 'var(--oiii)', taille: 15 });
+  s += trait(O, [O[0] - RJ - 2, O[1]], { epaisseur: 1.2, fleche: 'fin' });
+  s += texte([O[0] - RJ + 8, O[1]], `direction ${L0}</tspan>`, { dy: -9, taille: 15, brut: true });
+  s += texte(D, 'départ, jour J', { dx: -6, dy: 22, ancre: 'end', taille: 14 });
+  if (etape === 'trajet') {
+    s += trait(O, [O[0] + RJ - 2, O[1]], { epaisseur: 1.2, fleche: 'fin' });
+    s += texte([O[0] + RJ - 8, O[1]], `direction ${L0} + 180°</tspan>`, { dy: -9, ancre: 'end', taille: 15, brut: true });
+    s += texte(Ar, 'arrivée, J + 997,9', { dx: -8, dy: 22, ancre: 'end', taille: 14 });
+  } else {
+    const g = (97.1 * Math.PI) / 180;                       // Jupiter en avance de 97,1° (sens direct, la Terre étant à gauche)
+    const J: P2 = [O[0] - RJ * Math.cos(g), O[1] + RJ * Math.sin(g)];
+    s += trait(O, [O[0] + (J[0] - O[0]) * 0.96, O[1] + (J[1] - O[1]) * 0.96], { epaisseur: 1.2, fleche: 'fin' });
+    s += arcAngle(O, 40, Math.PI, Math.PI + g, { couleur: 'var(--sodium)' });
+    s += texte([O[0] + 30 * Math.cos(Math.PI + g / 2) - 4, O[1] - 30 * Math.sin(Math.PI + g / 2) + 6], '97,1°', { ancre: 'middle', taille: 14, couleur: 'var(--sodium)' });
+    s += point(J, 7, 'var(--sodium)') + texte(J, 'Jupiter', { dx: -12, dy: -4, ancre: 'end', taille: 15 });
+    s += texte([O[0] + 14, O[1] + 150], `direction ${L0} + 97,1°</tspan>`, { taille: 15, brut: true });
+    s += texte(Ar, 'arrivée, J + 997,9', { dx: -8, dy: -26, ancre: 'end', taille: 14 });
+    s += texte(Ar, `${L0} + 180°</tspan>`, { dx: -8, dy: -9, ancre: 'end', taille: 14, brut: true });
+  }
+  s += point(D, 5, 'var(--oiii)') + point(Ar, 4.5, 'var(--halpha)');
+}
+s += point(O, 8, 'var(--sodium)');
+void ind;
+const titres = {
+  transfert: 'Orbite de transfert de Hohmann : une ellipse, de foyer le Soleil, tangente en A à l’orbite intérieure et en D à l’orbite extérieure.',
+  trajet: 'Transfert de Hohmann vers Jupiter : la sonde part le jour J dans la direction L0 et arrive 997,9 jours plus tard dans la direction opposée, L0 + 180°.',
+  lancement: 'Positions le jour du lancement : la Terre dans la direction L0, Jupiter en avance de 97,1° ; la sonde rejoindra Jupiter dans la direction L0 + 180°.',
+};
+---
+<Figure titre={titres[etape]} largeur={W} hauteur={524} svg={s}><slot /></Figure>

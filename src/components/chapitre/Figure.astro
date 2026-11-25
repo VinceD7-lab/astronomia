@@ -1,0 +1,16 @@
+---
+/**
+ * Cadre commun des schémas en SVG en ligne : le SVG est calculé par le composant appelant
+ * (avec src/lib/schema.ts), le titre sert de description accessible, la légende vient du contenu.
+ */
+interface Props { titre: string; largeur: number; hauteur: number; svg: string }
+const { titre, largeur, hauteur, svg } = Astro.props;
+const id = 'fig-' + Math.random().toString(36).slice(2, 8);
+---
+<figure class="schema">
+  <svg viewBox={`0 0 ${largeur} ${hauteur}`} role="img" aria-labelledby={id}>
+    <title id={id}>{titre}</title>
+    <g font-family="var(--lecture)" stroke-linejoin="round" set:html={svg} />
+  </svg>
+  <figcaption><slot /></figcaption>
+</figure>

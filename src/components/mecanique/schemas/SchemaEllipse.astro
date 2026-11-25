@@ -1,0 +1,52 @@
+---
+/**
+ * Ellipse de foyers S et S′ (redessiné d’après J. Gispert).
+ * variante « P » : un point P relié aux deux foyers ; « B » : le sommet B, avec a, b et c ;
+ * « H » : un point P et sa projection H sur le grand axe, avec ses coordonnées x et y.
+ */
+import Figure from '../../chapitre/Figure.astro';
+import { trait, texte, point, courbe, pointsEllipse, type P2 } from '../../../lib/schema';
+interface Props { variante?: 'P' | 'B' | 'H' }
+const { variante = 'P' } = Astro.props;
+
+const O: P2 = [300, 172], a = 230, b = 115, c = Math.sqrt(a * a - b * b);
+const S: P2 = [O[0] + c, O[1]], S2: P2 = [O[0] - c, O[1]], A: P2 = [O[0] + a, O[1]], B: P2 = [O[0], O[1] - b];
+const surEllipse = (t: number): P2 => [O[0] + a * Math.cos(t), O[1] - b * Math.sin(t)];
+const P = surEllipse(((variante === 'H' ? 62 : 56) * Math.PI) / 180);
+const H: P2 = [P[0], O[1]];
+
+let s = courbe(pointsEllipse(O, a, b), { couleur: 'var(--oiii)', epaisseur: 2.4, remplir: 'var(--oiii)', opacite: 0.07, ferme: true });
+s += trait([34, O[1]], [574, O[1]], { couleur: 'var(--doux)', epaisseur: 1.1, fleche: 'fin' });
+s += trait([O[0], 318], [O[0], 24], { couleur: 'var(--doux)', epaisseur: 1.1, fleche: 'fin' });
+
+if (variante === 'B') {
+  s += trait(S2, B) + trait(B, S, { couleur: 'var(--halpha)', epaisseur: 2 });
+  s += trait(O, S, { couleur: 'var(--sodium)', epaisseur: 2.4 }) + trait(O, B, { couleur: 'var(--sodium)', epaisseur: 2.4 });
+  s += texte([(B[0] + S[0]) / 2, (B[1] + S[1]) / 2], 'a', { dx: 10, dy: -6, italique: true, taille: 18, couleur: 'var(--halpha)' });
+  s += texte([O[0], (O[1] + B[1]) / 2], 'b', { dx: -10, dy: 6, ancre: 'end', italique: true, taille: 18, couleur: 'var(--sodium)' });
+  s += texte([(O[0] + S[0]) / 2, O[1]], 'c', { dy: 22, ancre: 'middle', italique: true, taille: 18, couleur: 'var(--sodium)' });
+} else {
+  s += trait(S2, P) + trait(P, S);
+  s += point(P, 5, 'var(--oiii)') + texte(P, 'P', { dx: 6, dy: -10, italique: true, taille: 17 });
+}
+if (variante === 'H') {
+  s += trait(P, H, { tirets: '5 4', epaisseur: 1.2 });
+  s += point(H, 3.5) + texte(H, 'H', { dx: -4, dy: 22, italique: true, taille: 17, ancre: 'end' });
+  s += texte([(O[0] + H[0]) / 2, O[1]], 'x', { dy: -8, ancre: 'middle', italique: true, taille: 17, couleur: 'var(--sodium)' });
+  s += texte([H[0], (O[1] + P[1]) / 2], 'y', { dx: 8, dy: 6, italique: true, taille: 17, couleur: 'var(--sodium)' });
+}
+s += point(S, 7, 'var(--sodium)') + point(S2, 4, 'var(--doux)') + point(O, 3.5) + point(A, 4, 'var(--oiii)');
+if (variante !== 'B') s += point(B, 4, 'var(--oiii)');
+s += texte(S, 'S', { dy: 26, ancre: 'middle', italique: true, taille: 17 });
+s += texte(S2, 'S′', { dy: 26, ancre: 'middle', italique: true, taille: 17, couleur: 'var(--doux)' });
+s += texte(O, 'O', { dx: -10, dy: 22, ancre: 'end', italique: true, taille: 17 });
+s += texte(A, 'A', { dx: 6, dy: -10, italique: true, taille: 17 });
+s += texte(B, 'B', { dx: -10, dy: -8, ancre: 'end', italique: true, taille: 17 });
+
+const titres = {
+  P: 'Ellipse de centre O et de foyers S et S′ : un point P de l’ellipse est relié aux deux foyers.',
+  B: 'Ellipse : le sommet B est relié aux deux foyers ; SB = a, OB = b et OS = c forment un triangle rectangle.',
+  H: 'Ellipse : un point P, relié aux deux foyers, et sa projection H sur le grand axe ; OH = x et HP = y.',
+};
+---
+<Figure titre={titres[variante]} largeur={600} hauteur={336} svg={s}><slot /></Figure>

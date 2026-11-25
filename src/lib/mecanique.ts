@@ -50,3 +50,25 @@ export function etatKepler(M: number, e: number) {
   const r = 1 - e * Math.cos(E);
   return { E, x, y, r, v: Math.sqrt(2 / r - 1), nu: Math.atan2(y, x) };
 }
+
+/* ------------------------------------------------------------------ */
+/* Intégration numérique pas à pas (exemple du tableur)                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Rejoue le tableur du chapitre « Un peu de mécanique », ligne par ligne, avec les formules de ses cellules :
+ * k = −G·M·dt / r³, puis x += vx·dt, y += vy·dt, vx += k·x·dt, vy += k·y·dt.
+ * Renvoie l’écart à la position de départ (dx, en mètres, calculé à part pour garder la précision) et y.
+ */
+export function integrationTableur(lignes = 47, G = 6.67e-11, M = 2e30, dt = 0.1) {
+  let x = 1.5e11, y = 0, vx = 0, vy = 30000, dx = 0;
+  let k = (-G * M * dt) / (x * x + y * y) ** 1.5;
+  const pts = [{ dx: 0, y: 0 }];
+  for (let i = 1; i < lignes; i++) {
+    dx += vx * dt;
+    [x, y, vx, vy] = [x + vx * dt, y + vy * dt, vx + k * x * dt, vy + k * y * dt];
+    k = (-G * M * dt) / (x * x + y * y) ** 1.5;
+    pts.push({ dx, y });
+  }
+  return pts;
+}

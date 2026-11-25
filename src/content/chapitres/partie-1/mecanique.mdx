@@ -7,6 +7,10 @@ resume: "Les propriétés de l’ellipse, le mouvement képlérien et l’équat
 epigraphe: "« La Terre est le berceau de l'humanité, mais on ne passe pas sa vie entière dans un berceau » Konstantin Tsiolkovsky"
 ---
 import Encadre from '../../../components/chapitre/Encadre.astro';
+import SchemaEllipse from '../../../components/mecanique/schemas/SchemaEllipse.astro';
+import SchemaCerclePrincipal from '../../../components/mecanique/schemas/SchemaCerclePrincipal.astro';
+import SchemaHohmann from '../../../components/mecanique/schemas/SchemaHohmann.astro';
+import SchemaIntegration from '../../../components/mecanique/schemas/SchemaIntegration.astro';
 
 Ce chapitre n’est pas un cours de mécanique céleste, sujet bien trop complexe pour le cadre de ce cours. Au contraire, il est destiné à donner les connaissances essentielles, accessibles avec un niveau de maths-physique de terminale. Vous y trouverez une démonstration géométrique des propriétés des orbites elliptiques, et quelques formules importantes pour comprendre le comportement des planètes.
 
@@ -24,7 +28,9 @@ L’ellipse est l’ensemble des points du plan dont la somme des distances à d
 
 D’autres définitions de l’ellipse existent, mais celle-ci est la plus simple.
 
-![Ellipse de foyers S et S′ et de centre O, avec un point P relié aux deux foyers](../../../assets/mecanique/ellipse1.svg)
+<SchemaEllipse variante="P">
+Pour tout point P de l’ellipse, la somme des distances S′P + SP est la même. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaEllipse>
 
 Pour tout point P de l’ellipse, on a&#8239;: S'P + SP = cste
 
@@ -39,12 +45,14 @@ donc S'A + SA = c + a + a - c = 2a
 Par conséquent la constante est 2a, et pour tout point P de l’ellipse&#8239;:
 
 <Encadre type="plus">
-pse S'P + SP = 2a
+S'P + SP = 2a
 </Encadre>
 
 **Deuxième conséquence**&#8239;: appliquons la somme des distances pour le point B. Il vient S'B + SB = 2a. Mais l’axe vertical est un axe de symétrie pour l’ellipse. Donc, S'B = SB. Alors, S'B + SB = SB + SB = 2 SB = 2a&#8239;; SB = a.
 
-![Ellipse : le sommet B relié aux deux foyers S et S′](../../../assets/mecanique/ellipse2.svg)
+<SchemaEllipse variante="B">
+Au sommet B, SB = S′B = a : le triangle SOB, rectangle en O, donne c² + b² = a². Schéma redessiné d’après l’original (J. Gispert).
+</SchemaEllipse>
 
 Nous avons un triangle rectangle&#8239;: SOB. Appliquons le théorème de Pythagore&#8239;:
 
@@ -62,7 +70,9 @@ On sait maintenant où se trouvent les foyers.
 
 <span id="Equatellip"></span>
 
-![Ellipse : un point P relié aux foyers, et sa projection H sur le grand axe](../../../assets/mecanique/ellipse3.svg)
+<SchemaEllipse variante="H">
+Les triangles rectangles S′HP et SHP donnent les distances de P aux deux foyers, en fonction de x = OH et y = HP. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaEllipse>
 
 La définition de l’ellipse permet de trouver directement son équation cartésienne. Il suffit d’évaluer les deux distances. Pour cela, remarquons que nous avons deux triangles rectangles. Chacun permet d’évaluer une distance&#8239;:
 
@@ -180,7 +190,9 @@ On construit le cercle exinscrit à l’ellipse (on l’appelle *cercle principa
 
 On construit P' la contre-projection de la planète P sur le cercle circonscrit à l’orbite. OP' est donc un rayon du cercle exinscrit, et par suite OP' = OA = a. Le *rayon vecteur* est la ligne SP qui joint la planète à l’objet qui la tient en orbite, c’est-à-dire au foyer positif de l’orbite. H est la projection de la planète sur le demi grand-axe. H, P et P' sont donc alignés.
 
-![Ellipse képlérienne et cercle principal : la planète P, sa contre-projection P′ sur le cercle et sa projection H sur le grand axe](../../../assets/mecanique/ellipse.svg)
+<SchemaCerclePrincipal>
+La planète P, sa contre-projection P′ sur le cercle principal et sa projection H sur le grand axe ; u est l’anomalie excentrique, v l’anomalie vraie. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaCerclePrincipal>
 
 L’*anomalie vraie* est l’angle que fait le *rayon vecteur* SP avec la direction du périhélie SA, donc l’angle v = (SA, SP).
 
@@ -391,7 +403,9 @@ Avec l’éloignement au Soleil croissant, la vitesse des planètes diminue comm
 
 Pour envoyer une sonde depuis la Terre vers une planète, de nombreuses trajectoires sont possibles, qui diffèrent par le temps de parcours, et la quantité de carburant nécessaire. La trajectoire la plus économique est la trajectoire de Hohmann, qui est tangente aux orbites de départ et d’arrivée. C’est celle qui minimise la différence de vitesse entre la cible (planète visée) et la sonde à l’arrivée. Elle minimise de façon symétrique la différence de vitesse au départ.
 
-![Trajectoire de Hohmann : ellipse tangente à l’orbite intérieure en A et à l’orbite extérieure en D](../../../assets/mecanique/hohmann.svg)
+<SchemaHohmann etape="transfert">
+L’orbite de transfert (en rouge) est tangente aux deux orbites, en A et en D ; son foyer est le Soleil. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaHohmann>
 
 Pour simplifier un peu le problème, on considère seulement des orbites circulaires pour les deux planètes. L’aphélie de l’orbite cherchée est au niveau de l’orbite de départ, disons à la distance R du Soleil. A l’arrivée, le périhélie est au niveau de la planète cible, soit r. On a donc, q et Q dénotant les distances périhélique et aphélique de l’orbite de Hohmann&#8239;: Q = R, q = r. Donc Q = a (1 + e) = R et q = a (1 - e) = r.
 
@@ -523,7 +537,9 @@ On suppose que les orbites des planètes sont des cercles, ce qui est acceptable
 - Jupiter fait un tour complet autour du Soleil (360°) en 11 ans 312,85 jours (voir la [fiche](https://astronomia.fr/7eme_partie/fiches/fic_planetes.php)) soit 11 × 365,25 + 312,85 jours = **4.330,6 jours**. Par conséquent, Jupiter se déplace sur son orbite à la vitesse angulaire ω<sub>J</sub> = 360° / 4.330,6 jours = 0,0831 °/jour.
 - Pareillement, la Terre met 365,25 jours pour accomplir un tour complet autour du Soleil. Donc elle parcourt ω<sub>T</sub> = 360° / 365,25 jours = 0,986 °/jour.
 
-![Trajectoire de Hohmann vers Jupiter : départ le jour J à la longitude L0, arrivée à J + 997,9 à la longitude L0 + 180°](../../../assets/mecanique/jupiter1.svg)
+<SchemaHohmann etape="trajet">
+La sonde parcourt la moitié de l’orbite de transfert : partie dans la direction L₀, elle arrive 997,9 jours plus tard dans la direction opposée. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaHohmann>
 
 Au jour J du lancement, la Terre et Jupiter se trouvent quelque part sur leur orbite. La position de la Terre est repérée par sa longitude L<sub>0</sub>. C’est aussi la position de la sonde au lancement. Lorsque la sonde arrive au rendez-vous, 997,9 jours plus tard, elle se trouve exactement de l’autre côté du Soleil, puisqu’elle a parcouru la moitié de l’orbite de Hohmann. Donc, le jour J + 997,9 la sonde se trouve à la longitude L<sub>0</sub> + 180°.
 
@@ -531,7 +547,9 @@ Pour que le rendez-vous se réalise, il faut que Jupiter soit là également. Do
 
 Jupiter se déplaçant à raison de ω<sub>J</sub> = 0,0831 °/jour pendant 997,9 jours il parcourt 0,0831 °/jour × 997,9 jours = 82,9°. Le jour du lancement, Jupiter est donc à 82,9° du lieu de rendez-vous. Sa longitude est donc L<sub>0</sub> + 180° - 82,9° = L<sub>0</sub> + 97,1°. **Jupiter est en avance de 97,1° par rapport à la Terre**. C’est la condition que doivent satisfaire les orbites pour que le rendez-vous soit réalisé. Le jour du lancement, les directions de la Terre et de Jupiter sont pratiquement perpendiculaires vues du Soleil&#8239;:
 
-![Positions de la Terre et de Jupiter le jour du lancement : Jupiter est en avance de 97° sur la Terre](../../../assets/mecanique/jupiter2.svg)
+<SchemaHohmann etape="lancement">
+Le jour du lancement, Jupiter doit être en avance de 97,1° sur la Terre pour se trouver au rendez-vous. Schéma redessiné d’après l’original (J. Gispert).
+</SchemaHohmann>
 
 Ce schéma montre les positions de la Terre et de Jupiter le jour du lancement. Planètes et sonde tournent dans le sens inverse des aiguilles d’une montre.
 
@@ -846,8 +864,8 @@ A la ligne 4, on indique les titres des colonnes&#8239;: x pour la première, si
 
 Il reste à recopier la dernière ligne vers le bas, autant de fois que vous voudrez d’itérations.
 
-![Graphique : les 47 positions successives calculées par le tableur, sur un arc d’ellipse](../../../assets/mecanique/resultat.svg)
-
-Graphique produit d’après ce tableau, par le tableur *Numbers* (Apple)
+<SchemaIntegration>
+Graphique produit d’après ce tableau&#8239;: les 47 positions successives (lignes 5 à 51). L’original avait été tracé avec le tableur *Numbers* (Apple)&#8239;; ici, les points sont recalculés avec les mêmes formules. L’écart en x n’est que de 6 mm, d’où l’échelle en millimètres.
+</SchemaIntegration>
 
 La méthode utilisée est bien trop grossière pour donner de bons résultats sur une grande durée. Si vous voulez faire mieux, il faudra utiliser des méthodes d’intégration numérique, comme par exemple les méthodes de Runge-Kutta. Le but de cet exercice était de montrer le principe de l’intégration numérique.

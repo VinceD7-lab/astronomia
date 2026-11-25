@@ -104,3 +104,10 @@
 .chap-voisins .label{display:block;margin-bottom:.2rem}
 .chap-voisins .suiv{text-align:right;grid-column:2}
 @media (max-width:640px){.chap-voisins{grid-template-columns:1fr}.chap-voisins .suiv{grid-column:1;text-align:left}}
+
+/* schémas en SVG en ligne (src/components/chapitre/Figure.astro) */
+.prose figure.schema{margin:1.8rem 0}
+.prose figure.schema > svg{display:block;width:100%;height:auto;background:var(--nuit);border:1px solid var(--trait);border-radius:8px}
+.prose figure.schema figcaption{font-size:.9rem;color:var(--doux);margin-top:.6rem;line-height:1.5}
+.prose figure.schema text{font-family:var(--lecture)}
+@media print{.prose figure.schema{break-inside:avoid}}

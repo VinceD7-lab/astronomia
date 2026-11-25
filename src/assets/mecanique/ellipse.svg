@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 462 455" width="462" height="455" font-family="Arial, Helvetica, sans-serif" font-size="13">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#000"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#000"/></marker>
+  </defs>
+  <rect width="462" height="455" fill="#ccffcc" stroke="#555"/>
+  <circle cx="231" cy="227" r="155" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <ellipse cx="231" cy="227" rx="155" ry="101" fill="none" stroke="#000" stroke-width="1.2"/>
+  <line x1="27" y1="227" x2="436" y2="227" stroke="#000" marker-end="url(#f)"/>
+  <line x1="231" y1="434" x2="231" y2="22" stroke="#000" marker-end="url(#f)"/>
+  <g fill="none" stroke="#000">
+    <line x1="231" y1="227" x2="362" y2="144.2"/><line x1="231" y1="227" x2="362" y2="173"/>
+    <line x1="348.6" y1="227" x2="362" y2="144.2"/><line x1="348.6" y1="227" x2="362" y2="173"/>
+    <line x1="362" y1="227" x2="362" y2="144.2"/>
+  </g>
+  <g font-size="10">
+    <text x="221" y="67">B’</text><text x="221" y="121">B</text>
+    <text x="107.4" y="240">S’</text><text x="234" y="240">O</text>
+    <text x="340.6" y="240">S</text><text x="359" y="240">H</text><text x="389" y="240">A</text>
+    <text x="365" y="143.2">P’</text><text x="365" y="172">P</text>
+  </g>
+</svg>

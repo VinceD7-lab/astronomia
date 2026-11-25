@@ -24,7 +24,7 @@ L’ellipse est l’ensemble des points du plan dont la somme des distances à d
 
 D’autres définitions de l’ellipse existent, mais celle-ci est la plus simple.
 
-![ellipse keplerienne, cercle principal](../../../assets/mecanique/ellipse1.gif)
+![Ellipse de foyers S et S′ et de centre O, avec un point P relié aux deux foyers](../../../assets/mecanique/ellipse1.svg)
 
 Pour tout point P de l’ellipse, on a&#8239;: S'P + SP = cste
 
@@ -44,7 +44,7 @@ pse S'P + SP = 2a
 
 **Deuxième conséquence**&#8239;: appliquons la somme des distances pour le point B. Il vient S'B + SB = 2a. Mais l’axe vertical est un axe de symétrie pour l’ellipse. Donc, S'B = SB. Alors, S'B + SB = SB + SB = 2 SB = 2a&#8239;; SB = a.
 
-![ellipse keplerienne, cercle principal](../../../assets/mecanique/ellipse2.gif)
+![Ellipse : le sommet B relié aux deux foyers S et S′](../../../assets/mecanique/ellipse2.svg)
 
 Nous avons un triangle rectangle&#8239;: SOB. Appliquons le théorème de Pythagore&#8239;:
 
@@ -62,7 +62,7 @@ On sait maintenant où se trouvent les foyers.
 
 <span id="Equatellip"></span>
 
-![ellipse keplerienne, cercle principal](../../../assets/mecanique/ellipse3.gif)
+![Ellipse : un point P relié aux foyers, et sa projection H sur le grand axe](../../../assets/mecanique/ellipse3.svg)
 
 La définition de l’ellipse permet de trouver directement son équation cartésienne. Il suffit d’évaluer les deux distances. Pour cela, remarquons que nous avons deux triangles rectangles. Chacun permet d’évaluer une distance&#8239;:
 
@@ -180,29 +180,48 @@ On construit le cercle exinscrit à l’ellipse (on l’appelle *cercle principa
 
 On construit P' la contre-projection de la planète P sur le cercle circonscrit à l’orbite. OP' est donc un rayon du cercle exinscrit, et par suite OP' = OA = a. Le *rayon vecteur* est la ligne SP qui joint la planète à l’objet qui la tient en orbite, c’est-à-dire au foyer positif de l’orbite. H est la projection de la planète sur le demi grand-axe. H, P et P' sont donc alignés.
 
-![ellipse keplerienne, cercle principal](../../../assets/mecanique/ellipse.gif)
+![Ellipse képlérienne et cercle principal : la planète P, sa contre-projection P′ sur le cercle et sa projection H sur le grand axe](../../../assets/mecanique/ellipse.svg)
 
 L’*anomalie vraie* est l’angle que fait le *rayon vecteur* SP avec la direction du périhélie SA, donc l’angle v = (SA, SP).
 
 L’*anomalie excentrique* est l’angle que fait le demi grand axe avec la ligne joignant le centre de l’ellipse à la contre-projection de la planète sur le cercle circonscrit&#8239;: c’est l’angle u = (OA, OP').
 
-![S](../../../assets/mecanique/s.gif)
-
-![S(OSP')](../../../assets/mecanique/sOSP.gif)
-
-*La lettre représente la surface d’une figure&#8239;; par exemple représente la surface du triangle OSP'.*
+*La lettre $\mathcal{S}$ représente la surface d’une figure&#8239;; par exemple $\mathcal{S}(OSP')$ représente la surface du triangle OSP'.*
 
 L’angle u étant l’angle entre les axes OA et OP'&#8239;:
 
-![Démonstration de l’équation de Kepler](../../../assets/mecanique/calcSurface.gif)
+$$
+\begin{aligned}
+\mathcal{S}(OSP') &= \frac{OS \cdot HP'}{2} = \frac{c \cdot HP'}{2} \\[4pt]
+\mathcal{S}(OAP') &= \frac{a^2\, u}{2} \\[4pt]
+\mathcal{S}(SAP') &= \mathcal{S}(OAP') - \mathcal{S}(OSP') \\[4pt]
+\mathcal{S}(SAP') &= \frac{a^2\, u}{2} - \frac{c \cdot HP'}{2} \\[4pt]
+HP' &= OP' \sin\,u = a\,\sin\,u \\[4pt]
+\mathcal{S}(SAP') &= \frac{a^2\, u}{2} - \frac{c\, a\,\sin\,u}{2} \\[4pt]
+\mathcal{S}(SAP) &= \frac{b}{a}\, \mathcal{S}(SAP') = \frac{b\, a\, u}{2} - \frac{b\, c\,\sin\,u}{2} \\[4pt]
+\mathcal{S}(SAP) &= \frac{b}{2}\,(a\, u - c\,\sin\,u) = \frac{b}{2}\,(a\, u - a\, e\,\sin\,u) \\[4pt]
+&= \frac{a\, b}{2}\,(u - e\,\sin\,u) = k\, t
+\end{aligned}
+$$
 
 Soit S la surface de l’ellipse&#8239;:
 
-![Suite de la démonstration](../../../assets/mecanique/formule2.gif)
+$$
+\begin{aligned}
+s &= \pi\, a\, b \quad\Rightarrow\quad a\, b = \frac{s}{\pi} \\[4pt]
+\frac{a\, b}{2}\,(u - e\,\sin\,u) &= k\, t = \frac{s}{2\pi}\,(u - e\,\sin\,u) \\[4pt]
+u - e\,\sin\,u &= \frac{2\pi k}{s}\, t \\[4pt]
+\text{Soit } T &= \frac{s}{k}
+\end{aligned}
+$$
 
 Il vient enfin&#8239;:
 
-![Formule : Equation de Kepler](../../../assets/mecanique/EqKepler.gif)
+<Encadre type="retenir" titre="Équation de Kepler">
+$$
+u - e\,\sin\,u = \frac{2\pi}{T}\, t
+$$
+</Encadre>
 
 C’est l’**équation de Kepler**.
 
@@ -256,7 +275,9 @@ Cette méthode converge très vite, il suffit de trois itérations pour obtenir 
 
 Une fois l’anomalie excentrique calculée, il faut revenir à l’anomalie vraie, qui définit la position de la planète sur son orbite dans des coordonnées centrées sur l’objet attracteur, et non sur le centre de l’ellipse. La formule de passage s’obtient par des considérations trigonométriques simples&#8239;:
 
-![Formule : relation entre u et v](../../../assets/mecanique/transfAnomalie.gif)
+$$
+\operatorname{tg} \frac{v}{2} = \sqrt{\frac{1+e}{1-e}}\; \operatorname{tg} \frac{u}{2}
+$$
 
 Pour achever le calcul, on doit donc calculer k = le terme de droite. Ensuite, on en prend l’arc tangente (fonction inverse sur les calculettes), puis on multiplie par 2.
 
@@ -322,7 +343,9 @@ v<sub>p</sub><sup>2</sup> = (G M / a) × (1 + e) /(1 - e)<br /> v<sub>a</sub><su
 
 C’est la durée de l’année, pour une planète, temps mis pour effectuer une orbite complète. La voici sans démonstration&#8239;:
 
-![vp](../../../assets/mecanique/F1_MC.jpg)
+$$
+T = 2\pi \sqrt{\frac{a^3}{G M}}
+$$
 
 où G est toujours la constante de la gravitation universelle, et a le demi grand axe de l’orbite. Cette formule est la même approximation que précédemment, elle est valable lorsque la masse de la planète est négligeable devant celle du Soleil.
 
@@ -330,11 +353,15 @@ La masse du Soleil est au dénominateur, donc plus elle est grande, plus courte 
 
 Justification de la formule&#8239;: élevons-la au carré. On obtient&#8239;:
 
-![vp](../../../assets/mecanique/F2_MC.jpg)
+$$
+T^2 = 4\pi^2\, \frac{a^3}{G M}
+$$
 
 qui donne&#8239;:
 
-![vp](../../../assets/mecanique/F3_MC.jpg)
+$$
+\frac{a^3}{T^2} = \frac{G M}{4\pi^2}
+$$
 
 Ce n’est pas sans nous rappeller la loi harmonique de Kepler&#8239;! C’est bien elle en effet qui nous donne la période, connaissant le demi grand axe et la masse du Soleil. Kepler l’a énoncée en disant que le rapport est constant, sans expliciter la constante. Nous connaissons maintenant sa valeur.
 
@@ -351,7 +378,9 @@ Donc a<sup>3</sup> ∝ a<sup>2</sup> / v<sup>2</sup>, ce qui se simplifiie en&#8
 a ∝ 1 / v<sup>2</sup> et v<sup>2</sup> ∝ 1 / a
 
 <Encadre type="plus">
-![vp](../../../assets/mecanique/F4_MC.jpg)
+$$
+v \propto \sqrt{\frac{1}{a}}
+$$
 </Encadre>
 
 Avec l’éloignement au Soleil croissant, la vitesse des planètes diminue comme la racine carrée de l’inverse de la distance. Une planète 4 fois plus loin, va deux fois moins vite.
@@ -362,7 +391,7 @@ Avec l’éloignement au Soleil croissant, la vitesse des planètes diminue comm
 
 Pour envoyer une sonde depuis la Terre vers une planète, de nombreuses trajectoires sont possibles, qui diffèrent par le temps de parcours, et la quantité de carburant nécessaire. La trajectoire la plus économique est la trajectoire de Hohmann, qui est tangente aux orbites de départ et d’arrivée. C’est celle qui minimise la différence de vitesse entre la cible (planète visée) et la sonde à l’arrivée. Elle minimise de façon symétrique la différence de vitesse au départ.
 
-![trajectoire de Hohmann](../../../assets/mecanique/hohmann.gif)
+![Trajectoire de Hohmann : ellipse tangente à l’orbite intérieure en A et à l’orbite extérieure en D](../../../assets/mecanique/hohmann.svg)
 
 Pour simplifier un peu le problème, on considère seulement des orbites circulaires pour les deux planètes. L’aphélie de l’orbite cherchée est au niveau de l’orbite de départ, disons à la distance R du Soleil. A l’arrivée, le périhélie est au niveau de la planète cible, soit r. On a donc, q et Q dénotant les distances périhélique et aphélique de l’orbite de Hohmann&#8239;: Q = R, q = r. Donc Q = a (1 + e) = R et q = a (1 - e) = r.
 
@@ -494,7 +523,7 @@ On suppose que les orbites des planètes sont des cercles, ce qui est acceptable
 - Jupiter fait un tour complet autour du Soleil (360°) en 11 ans 312,85 jours (voir la [fiche](https://astronomia.fr/7eme_partie/fiches/fic_planetes.php)) soit 11 × 365,25 + 312,85 jours = **4.330,6 jours**. Par conséquent, Jupiter se déplace sur son orbite à la vitesse angulaire ω<sub>J</sub> = 360° / 4.330,6 jours = 0,0831 °/jour.
 - Pareillement, la Terre met 365,25 jours pour accomplir un tour complet autour du Soleil. Donc elle parcourt ω<sub>T</sub> = 360° / 365,25 jours = 0,986 °/jour.
 
-![trajectoire de Hohmann vers Jupiter](../../../assets/mecanique/jupiter1.gif)
+![Trajectoire de Hohmann vers Jupiter : départ le jour J à la longitude L0, arrivée à J + 997,9 à la longitude L0 + 180°](../../../assets/mecanique/jupiter1.svg)
 
 Au jour J du lancement, la Terre et Jupiter se trouvent quelque part sur leur orbite. La position de la Terre est repérée par sa longitude L<sub>0</sub>. C’est aussi la position de la sonde au lancement. Lorsque la sonde arrive au rendez-vous, 997,9 jours plus tard, elle se trouve exactement de l’autre côté du Soleil, puisqu’elle a parcouru la moitié de l’orbite de Hohmann. Donc, le jour J + 997,9 la sonde se trouve à la longitude L<sub>0</sub> + 180°.
 
@@ -502,7 +531,7 @@ Pour que le rendez-vous se réalise, il faut que Jupiter soit là également. Do
 
 Jupiter se déplaçant à raison de ω<sub>J</sub> = 0,0831 °/jour pendant 997,9 jours il parcourt 0,0831 °/jour × 997,9 jours = 82,9°. Le jour du lancement, Jupiter est donc à 82,9° du lieu de rendez-vous. Sa longitude est donc L<sub>0</sub> + 180° - 82,9° = L<sub>0</sub> + 97,1°. **Jupiter est en avance de 97,1° par rapport à la Terre**. C’est la condition que doivent satisfaire les orbites pour que le rendez-vous soit réalisé. Le jour du lancement, les directions de la Terre et de Jupiter sont pratiquement perpendiculaires vues du Soleil&#8239;:
 
-![trajectoire de Hohmann vers Jupiter](../../../assets/mecanique/jupiter2.gif)
+![Positions de la Terre et de Jupiter le jour du lancement : Jupiter est en avance de 97° sur la Terre](../../../assets/mecanique/jupiter2.svg)
 
 Ce schéma montre les positions de la Terre et de Jupiter le jour du lancement. Planètes et sonde tournent dans le sens inverse des aiguilles d’une montre.
 
@@ -737,39 +766,57 @@ L’exemple ci-dessous est naïf, au sens où nous allons faire un calcul direct
 
 La loi de la gravitation universelle s’écrit sous forme vectorielle pour mettre en évidence les composantes&#8239;:
 
-![Formule : accélération de la gravitation](../../../assets/mecanique/calcul1.gif)
+$$
+\vec{\gamma} = \frac{d^2 \vec{r}}{dt^2} = -\frac{G M}{r^3}\, \vec{r}
+$$
 
 Cette formule se traduit par deux formules (on est dans un plan), une pour chaque composante&#8239;:
 
-![Formules : composantes de l’accélération](../../../assets/mecanique/calcul2.gif)
+$$
+\frac{d^2 x}{dt^2} = -\frac{G M}{r^3}\, x \qquad\text{et}\qquad \frac{d^2 y}{dt^2} = -\frac{G M}{r^3}\, y
+$$
 
 La distance r entre la planète et le Soleil s’obtient, d’après les coordonnées cartésiennes, par application du théorème de Pythagore&#8239;:
 
-![Formules : distance au Soleil en coordonnées cartésiennes](../../../assets/mecanique/calcul3.gif)
+$$
+r = \sqrt{x^2 + y^2} \qquad\text{et}\qquad r^3 = (x^2 + y^2)^{3/2}
+$$
 
 Reportant cette valeur dans l’expression des composantes de l’accélération, on obtient&#8239;:
 
-![Formules : équations différentielles de la gravitation](../../../assets/mecanique/calcul4.gif)
+$$
+\frac{d^2 x}{dt^2} = -\frac{G M}{(x^2+y^2)^{3/2}}\, x \qquad\text{et}\qquad \frac{d^2 y}{dt^2} = -\frac{G M}{(x^2+y^2)^{3/2}}\, y
+$$
 
 L’accélération est la dérivée de la vitesse par rapport au temps&#8239;:
 
-![Formules : accélération = dérivée de la vitesse](../../../assets/mecanique/calcul5.gif)
+$$
+\frac{d^2 x}{dt^2} = \frac{d v_x}{dt} \qquad\text{et}\qquad \frac{d^2 y}{dt^2} = \frac{d v_y}{dt}
+$$
 
 Donc&#8239;:
 
-![Formules : équations différentielles de la vitesse](../../../assets/mecanique/calcul6.gif)
+$$
+\frac{d v_x}{dt} = -\frac{G M}{(x^2+y^2)^{3/2}}\, x \qquad\text{et}\qquad \frac{d v_y}{dt} = -\frac{G M}{(x^2+y^2)^{3/2}}\, y
+$$
 
 Multipliant les deux termes par dt, on obtient&#8239;:
 
-![Formules : équations différentielles de la vitesse, variables séparées](../../../assets/mecanique/calcul7.gif)
+$$
+d v_x = -\frac{G M}{(x^2+y^2)^{3/2}}\, x\, dt \qquad\text{et}\qquad d v_y = -\frac{G M}{(x^2+y^2)^{3/2}}\, y\, dt
+$$
 
 Le calcul est terminé. Les deux composantes ont la même forme&#8239;; on définit k par&#8239;:
 
-![Formule : définition de k](../../../assets/mecanique/calcul8.gif)
+$$
+k = -\frac{G M}{(x^2+y^2)^{3/2}}
+$$
 
 Avec cette définition, nous avons maintenant&#8239;:
 
-![Formules : équation différentielle réduite de la vitesse](../../../assets/mecanique/calcul9.gif)
+$$
+d v_x = k\, x\, dt \qquad\text{et}\qquad d v_y = k\, y\, dt
+$$
 
 Le calcul se fait donc en commençant par évaluer k selon la formule de définition ci-dessus. Bien évidemment, x et y dans cette expression changent à chaque étape&#8239;! Une fois k connue, on détermine dv<sub>x</sub> et dv<sub>y</sub>, quantités qui représentent les petites variations des composantes de la vitesse dans l’intervalle de temps dt. La nouvelle vitesse est l’ancienne, augmentée de cette valeur, et ceci se fait donc composante par composante&#8239;: la nouvelle v<sub>x</sub> est la somme de l’ancienne, et de dv<sub>x</sub>. Idem pour y.
 
@@ -799,7 +846,7 @@ A la ligne 4, on indique les titres des colonnes&#8239;: x pour la première, si
 
 Il reste à recopier la dernière ligne vers le bas, autant de fois que vous voudrez d’itérations.
 
-![Schéma : ellipse tracée d’après les résultats précédents](../../../assets/mecanique/resultat.jpg)
+![Graphique : les 47 positions successives calculées par le tableur, sur un arc d’ellipse](../../../assets/mecanique/resultat.svg)
 
 Graphique produit d’après ce tableau, par le tableur *Numbers* (Apple)
 

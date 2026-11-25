@@ -38,7 +38,10 @@
 .prose :is(h2,h3):target{scroll-margin-top:5rem}
 .prose math{font-size:1.08em}
 .prose .math-display{margin:1.2rem 0;overflow-x:auto;overflow-y:hidden}
-.prose math[display="block"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.2rem 0}
+.prose math[display="block"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.2rem 0;margin:1rem 0}
+/* alignements de \begin{aligned} (MathML : columnalign n’est pas appliqué par tous les navigateurs) */
+.prose mtable[columnalign="right left"]>mtr>mtd:nth-child(odd){text-align:right}
+.prose mtable[columnalign="right left"]>mtr>mtd:nth-child(even){text-align:left}
 .prose img{max-width:100%;height:auto}
 .prose a{overflow-wrap:anywhere}
 .prose table{border-collapse:collapse;width:100%;font-size:.95rem;margin:1.2rem 0}
